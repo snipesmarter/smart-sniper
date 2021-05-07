@@ -1,4 +1,7 @@
 # Smart Sniper
+
+# RELEASING SOON Estimated 5/9/2021
+
 ## The most adaptive autosniper in the industry 
 
 Smartsniper is a high tech adaptive sniper. This sniper's autosniping and automatic delay tuning assists in helping you obtain the best username possible!
