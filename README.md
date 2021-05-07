@@ -105,4 +105,4 @@ GNU General Public License v3.0
 #### Credits
 
 Thanks to kqzz for like helping alot for this project.
-[//]: # (Thanks to cxt for annoying me while i write this description.)
+
