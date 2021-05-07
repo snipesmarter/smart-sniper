@@ -1,6 +1,6 @@
 # Smart Sniper
 
-# RELEASING SOON Estimated 5/9/2021
+## RELEASING SOON Estimated 5/9/2021!
 
 ## The most adaptive autosniper in the industry 
 
