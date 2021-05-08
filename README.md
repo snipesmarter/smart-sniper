@@ -71,7 +71,7 @@ console.log(document.cookie.match(/bearer_token=([^;]+)/)?.[1] ?? 'There is no b
 ```
 Now you have your bearer token!
 
-Information from: https://kqzz.github.io/mc-bearer-token/
+Information from: https://kqzz.github.io/mc-bearer-token/ and danktrain#0001
 
 ## Resources
 
