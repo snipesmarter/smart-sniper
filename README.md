@@ -67,7 +67,7 @@ To get your bearer token
  - Go to the "console" tab
  - paste this code into the console:
 ```js
-console.log(`; ${document.cookie}`.split(`; bearer_token=`).pop().split(';').shift())
+console.log(document.cookie.match(/bearer_token=([^;]+)/)?.[1] ?? 'There is no bearer token in your cookies, make sure you are on minecraft.net and that you are logged into your account.')
 ```
 Now you have your bearer token!
 
