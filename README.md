@@ -15,6 +15,7 @@ Smartsniper is a high tech adaptive sniper. This sniper's autosniping and automa
 - Soon to come: Normal Sniping!
 
 Made By expert snipers!
+
 Credits to [Kqzz] who made [McSniperPY]
 
 > The overriding design goal for smart sniper
@@ -106,3 +107,4 @@ GNU General Public License v3.0
 
 Thanks to kqzz for like helping alot for this project.
 
+# Made by Coolkidmacho#7567
