@@ -158,6 +158,9 @@ async def send_mojang_request(s, bearer, name):
 
 
 async def get_mojang_token(email, password):
+    # Login code is partially from mcsniperpy thx!
+    questions = []
+
     async with aiohttp.ClientSession() as session:
         authenticate_json = {"username": email, "password": password}
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0",
@@ -173,26 +176,33 @@ async def get_mojang_token(email, password):
             else:
                 print("INVALID CREDENTIALS")
 
-        async with session.post("https://api.mojang.com/user/security/challenges", headers=auth) as r:
-            print(r.status)
-            if r.status == 200:
+        async with session.get("https://api.mojang.com/user/security/challenges", headers=auth) as r:
+            answers = []
+            if r.status<300:
                 resp_json = await r.json()
                 if resp_json == []:
-                    async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange",
-                                           headers={"Authorization": "Bearer " + access_token}) as namecChangeResponse:
-                        ncjson = await namecChangeResponse.json()
-                        print(ncjson)
+                    async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers={"Authorization": "Bearer " + access_token}) as ncE:
+                        ncjson = await ncE.json()
                         try:
-                            if ncjson["nameChangeAllowed"] is False:
-                                print(
-                                    "Your Account is not"
-                                    " eligible for a name change!"
-                                )
-                                exit()
+                            if ncjson['nameChangeAllowed'] is False:
+                                print("cannot change your name")
                             else:
-                                print("Logged into your account successfully!")
+                                print("logged in correctly!")
                         except Exception:
-                            print("Logged into your account successfully!")
+                            print("logged in correctly")
+                else:
+                    try:
+                        for x in range(3):
+                            ans = input(resp_json[x]["question"]["question"])
+                            answers.append({"id": resp_json[x]["answer"]["id"], "answer": ans})
+                    except IndexError:
+                        print("security questions were there, but you didnt provide any")
+                        return
+                    async with session.post("https://api.mojang.com/user/security/location", json=answers, headers=auth) as r:
+                        if r.status<300:
+                            print("logged in correctly")
+                        else:
+                            print("your answers are incorrect")
     return access_token
 
 
