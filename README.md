@@ -23,7 +23,7 @@ Credits to [Kqzz] who made [McSniperPY]
 > to be as interactive and hands free as possible.
 
 We hope to make the sniping experience so automated that once you let it run it will snipe a name without any interaction
-# Warning this is only for giftcard sniping, we are adding normal sniping soon.
+# Warning this is a very first release, there are bugs we need to squash.
 ## Installation
 
 SmartSniper requires [Python](https://www.python.org/) v3.8 to run.
@@ -38,20 +38,34 @@ pip install -r requirements.txt
 ```
 You can replace the first step with just downloading the ziped file of this.
 
-## Usage
+# Usage
 
-### AutoSniping
+## AutoSniping
 
 Open command prompt in the folder and run this command!
 ```sh
 python main.py
 ```
-Interacting with the program.
+#### Interacting with the program.
+
+```sh
+What account type? Enter `g` for giftcard and `m` for mojang and `ms` for microsoft accounts: (choose your account)
+```
+### If you choose ms or gc you will be faced with this menu
 ```sh
 What is your bearer token:  (look at the section below if you dont know what this means, or how to get it!)
-
+```
+#### If you choose mojang you will be faced with this menu
+```sh
+selected mojang account, transferring to mojang sniper.                                                                 Account Email: (enter your mojang email here)
+Password:   (enter your passowrd here)
+200
+{clientToken: , accessToken: }
+200
+```
+Then you will both be directed to this menu
+```sh
 What sniper mode? Enter `a` for autosniper and `n` for single name sniping: a
-
 starting
 What delay:  (enter 0 if you dont know what to do here)
 {'name': 'l1c', 'dropdate': 1620408382}
@@ -73,6 +87,33 @@ console.log(document.cookie.match(/bearer_token=([^;]+)/)?.[1] ?? 'There is no b
 Now you have your bearer token!
 
 Information from: https://kqzz.github.io/mc-bearer-token/ and danktrain#0001
+
+# Normal Sniping
+
+```sh
+What account type? Enter `g` for giftcard and `m` for mojang and `ms` for microsoft accounts: (choose your account)
+```
+### If you choose ms or gc you will be faced with this menu
+```sh
+What is your bearer token:  (look at the section below if you dont know what this means, or how to get it!)
+```
+#### If you choose mojang you will be faced with this menu
+```sh
+selected mojang account, transferring to mojang sniper.                                                                 Account Email: (enter your mojang email here)
+Password:   (enter your passowrd here)
+200
+{clientToken: , accessToken: }
+200
+```
+Then you will both be directed to this menu
+```sh
+What sniper mode? Enter `a` for autosniper and `n` for single name sniping: n
+what name do you want to snipe:  (enter the name you want to snipe)
+what delay do you want:  (try 250 at the start)
+droptime: 1620607024 (this will vary on the name)
+Response received @ 2021-05-09 17:37:04.086939 with the status 429                                                      Response received @ 2021-05-09 17:37:04.105448 with the status 403                                                      Response received @ 2021-05-09 17:37:04.123321 with the status 200
+265 inputted delay                                                                                                      0:00:00.123813                                                                                                          ['00', '123813']                                                                                                        changeint 23                                                                                                            delay: 265  tuned_delay  288
+```
 
 ## Resources
 
