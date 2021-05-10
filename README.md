@@ -155,5 +155,6 @@ GNU General Public License v3.0
 #### Credits
 
 Thanks to kqzz for like helping alot for this project.
+Thanks to kqzz's mcsniperpy project for code snippets in mojang auth!
 
 # Made by Coolkidmacho#7567
