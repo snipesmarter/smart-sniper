@@ -57,7 +57,8 @@ What is your bearer token:  (look at the section below if you dont know what thi
 ```
 #### If you choose mojang you will be faced with this menu
 ```sh
-selected mojang account, transferring to mojang sniper.                                                                 Account Email: (enter your mojang email here)
+selected mojang account, transferring to mojang sniper.
+Account Email: (enter your mojang email here)
 Password:   (enter your passowrd here)
 200
 {clientToken: , accessToken: }
@@ -99,7 +100,8 @@ What is your bearer token:  (look at the section below if you dont know what thi
 ```
 #### If you choose mojang you will be faced with this menu
 ```sh
-selected mojang account, transferring to mojang sniper.                                                                 Account Email: (enter your mojang email here)
+selected mojang account, transferring to mojang sniper.
+Account Email: (enter your mojang email here)
 Password:   (enter your passowrd here)
 200
 {clientToken: , accessToken: }
@@ -111,8 +113,14 @@ What sniper mode? Enter `a` for autosniper and `n` for single name sniping: n
 what name do you want to snipe:  (enter the name you want to snipe)
 what delay do you want:  (try 250 at the start)
 droptime: 1620607024 (this will vary on the name)
-Response received @ 2021-05-09 17:37:04.086939 with the status 429                                                      Response received @ 2021-05-09 17:37:04.105448 with the status 403                                                      Response received @ 2021-05-09 17:37:04.123321 with the status 200
-265 inputted delay                                                                                                      0:00:00.123813                                                                                                          ['00', '123813']                                                                                                        changeint 23                                                                                                            delay: 265  tuned_delay  288
+Response received @ 2021-05-09 17:37:04.086939 with the status 429
+Response received @ 2021-05-09 17:37:04.105448 with the status 403
+Response received @ 2021-05-09 17:37:04.123321 with the status 200
+265 inputted delay
+0:00:00.123813
+['00', '123813']
+changeint 23
+delay: 265  tuned_delay  288
 ```
 
 ## Resources
