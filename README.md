@@ -59,7 +59,7 @@ What is your bearer token:  (look at the section below if you dont know what thi
 ```sh
 selected mojang account, transferring to mojang sniper.
 Account Email: (enter your mojang email here)
-Password:   (enter your passowrd here)
+Password:   (enter your password here)
 200
 {clientToken: , accessToken: }
 200
