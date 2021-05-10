@@ -287,8 +287,7 @@ async def start():
             delay = input("what delay do you want:  ")
             global tuned_delay
             tuned_delay = delay
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(mojang_snipe(name, delay, token))
+            await (mojang_snipe(name, delay, token))
     elif mainset == "g":
         token = input("What is your bearer token:  ")
         style = input(
@@ -302,7 +301,7 @@ async def start():
             delay = input("what delay do you want:  ")
             tuned_delay = delay
             loop = asyncio.get_event_loop()
-            await snipe(name, delay, token)
+            loop.run_until_complete(snipe(name, delay, token))
         else:
             print("You did not enter a valid option please reselect.")
             time.sleep(3)
