@@ -31,7 +31,7 @@ global tuned_delay
 tuned_delay = None
 
 
-def store(droptime, offset):
+def store(droptime: int, offset: int) -> None:
     print(offset, "inputted delay")
     stamp = end[reqnum - 1]
     datetime_time = datetime.fromtimestamp(droptime)
@@ -69,7 +69,7 @@ def store(droptime, offset):
         print(f"delay: {offset}  tuned_delay  {tuned_delay}")
 
 
-async def send_request(s, bearer, name):
+async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None:
     headers = {
         "Content-type": "application/json",
         "Authorization": "Bearer " + bearer
@@ -89,7 +89,7 @@ async def send_request(s, bearer, name):
         end.append(datetime.now())
 
 
-async def get_droptime(username, session):
+async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     async with session.get(
             f"https://api.kqzz.me/api/namemc/droptime/{username}"
     ) as r:
@@ -106,7 +106,7 @@ async def get_droptime(username, session):
             exit()
 
 
-async def snipe(target, offset, bearer_token):
+async def snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
         droptime = await get_droptime(target, session)
         offset = int(offset)
@@ -120,7 +120,7 @@ async def snipe(target, offset, bearer_token):
         store(droptime, offset)
 
 
-async def autosniper(bearer):
+async def autosniper(bearer: str) -> None:
     print("starting")
     names = requests.get("https://api.3user.xyz/list").json()
     delay = int(input("What delay:  "))
@@ -140,7 +140,7 @@ async def autosniper(bearer):
 
 #   Mojang setup and snipe
 
-async def send_mojang_request(s, bearer, name):
+async def send_mojang_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None:
     headers = {
         "Content-type": "application/json",
         "Authorization": "Bearer " + bearer
@@ -157,7 +157,7 @@ async def send_mojang_request(s, bearer, name):
         end.append(datetime.now())
 
 
-async def get_mojang_token(email, password):
+async def get_mojang_token(email: str, password: str) -> str:
     async with aiohttp.ClientSession() as session:
         authenticate_json = {"username": email, "password": password}
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0",
@@ -179,8 +179,8 @@ async def get_mojang_token(email, password):
                 resp_json = await r.json()
                 if resp_json == []:
                     async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange",
-                                           headers={"Authorization": "Bearer " + access_token}) as namecChangeResponse:
-                        ncjson = await namecChangeResponse.json()
+                                           headers={"Authorization": "Bearer " + access_token}) as nameChangeResponse:
+                        ncjson = await nameChangeResponse.json()
                         print(ncjson)
                         try:
                             if ncjson["nameChangeAllowed"] is False:
@@ -196,7 +196,7 @@ async def get_mojang_token(email, password):
     return access_token
 
 
-async def mojang_snipe(target, offset, bearer_token):
+async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
         droptime = await get_droptime(target, session)
         offset = int(offset)
@@ -211,9 +211,14 @@ async def mojang_snipe(target, offset, bearer_token):
         store(droptime, offset)
 
 
-async def automojangsniper(token):
+async def automojangsniper(token: str) -> None:
     print("starting")
-    names = requests.get("https://api.3user.xyz/list").json()
+    r = requests.get("https://api.3user.xyz/list")
+    if r.status_code != 200:
+        print(f"Failed to get names from 3user | {r.status}")
+        quit()
+    else:
+        names = r.json()
     delay = int(input("What delay:  "))
     tuned_delay = delay
     for nameseg in names:
@@ -229,7 +234,7 @@ async def automojangsniper(token):
         await mojang_snipe(name, delay, token)
 
 
-async def gather_mojang_info():
+async def gather_mojang_info() -> None:
     email = input("Account Email:  ")
     password = input("Password:  ")
     token = await get_mojang_token(email, password)
@@ -246,7 +251,7 @@ async def gather_mojang_info():
         await mojang_snipe(name, delay, token)
 
 
-async def iterate_through_names(session: aiohttp.ClientSession):
+async def iterate_through_names(session: aiohttp.ClientSession) -> None:
     while True:
         async with session.get("https://api.3user.xyz/list") as r:
             r_json = await r.json()
@@ -259,7 +264,7 @@ async def iterate_through_names(session: aiohttp.ClientSession):
                 await asyncio.sleep(10)
 
 
-async def start():
+async def start() -> None:
     mainset = input(
         f"What account type? Enter `g` for giftcard "
         f"and `m` for mojang and `ms` for microsoft accounts:  "
@@ -312,11 +317,11 @@ async def start():
         exit()
 
 
-try:
-
-    warnings.filterwarnings("ignore", category=RuntimeWarning)
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(start())
-except Exception as e:
-    print(e)
-    print("ending, if this is unexpected please report to devs")
+if __name__ == '__main__':
+    try:
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(start())
+    except Exception as e:
+        print(e)
+        print("ending, if this is unexpected please report to devs")
