@@ -44,7 +44,7 @@ def store(droptime: int, offset: int) -> None:
     if int(finaldel[0]) != 0:
         changeversion = "inc"
         tuned_delay = 0
-        
+
         print(
             f"""{Fore.LIGHTRED_EX}Cannot tune your delay, please sync your time\n
             using http://www.thinkman.com/dimension4/download.htm
@@ -93,25 +93,34 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     async with session.get(
-            f"https://api.kqzz.me/api/namemc/droptime/{username}"
+            f"https://mojang-api.teun.lol/droptime/{username}"
     ) as r:
-        if r.status < 300:
+        try:
             r_json = await r.json()
-            droptime = r_json["droptime"]
-            print(f"Droptime: {droptime}")
+            droptime = r_json["UNIX"]
             return droptime
-        else:
-            print(f"{Fore.LIGHTRED_EX}Droptime for name not found, Please check if name is still dropping{Fore.RESET}")
-            time.sleep(2)
-            input(f"{Fore.LIGHTRED_EX}Press Enter to exit: {Fore.RESET}")
-            exit()
+        except:
+            prevOwner = input(f'{Fore.CYAN}What is the current username of the account that owned {username} before this?:   {Fore.RESET}')
+            r = requests.post('https://mojang-api.teun.lol/upload-droptime',
+                              json={'name': username, 'prevOwner': prevOwner})
+            print(r.text)
+            droptime = r.json()['UNIX']
+            return droptime
+
+    # else:
+        #     print(f"{Fore.LIGHTRED_EX}Droptime for name not found, Please check if name is still dropping{Fore.RESET}")
+        #     time.sleep(2)
+        #     input(f"{Fore.LIGHTRED_EX}Press Enter to exit: {Fore.RESET}")
+        #     exit()
 
 
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
         droptime = await get_droptime(target, session)
         offset = int(offset)
+        print(offset)
         snipe_time = droptime - (offset / 1000)
+        print(time.time())
         while time.time() < snipe_time:
             await asyncio.sleep(.001)
         coroutines = [
@@ -127,7 +136,7 @@ async def autosniper(bearer: str) -> None:
     delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
     tuned_delay = delay
     for nameseg in names:
-        
+
         name = nameseg["name"]
         droptime = nameseg["droptime"]
         print(f"Sniping: {name}, Droptime: {droptime}")
@@ -164,17 +173,16 @@ async def get_mojang_token(email: str, password: str) -> str:
     # Login code is partially from mcsniperpy thx!
     questions = []
 
-
     async with aiohttp.ClientSession() as session:
         authenticate_json = {"username": email, "password": password}
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0",
                    "Content-Type": "application/json"}
         async with session.post("https://authserver.mojang.com/authenticate", json=authenticate_json,
                                 headers=headers) as r:
-            #print(r.status)
+            # print(r.status)
             if r.status == 200:
                 resp_json = await r.json()
-                #print(resp_json)
+                # print(resp_json)
                 auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
                 access_token = resp_json["accessToken"]
                 print(f"{Fore.LIGHTGREEN_EX}Auth: {auth}\n\nAccess Token: {access_token}")
@@ -183,11 +191,11 @@ async def get_mojang_token(email: str, password: str) -> str:
 
         async with session.get("https://api.mojang.com/user/security/challenges", headers=auth) as r:
             answers = []
-            if r.status<300:
+            if r.status < 300:
                 resp_json = await r.json()
                 if resp_json == []:
                     async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange",
-                                headers={"Authorization": "Bearer " + access_token}) as nameChangeResponse:
+                                           headers={"Authorization": "Bearer " + access_token}) as nameChangeResponse:
                         ncjson = await nameChangeResponse.json()
                         print(ncjson)
                         try:
@@ -209,8 +217,9 @@ async def get_mojang_token(email: str, password: str) -> str:
                     except IndexError:
                         print(f"{Fore.LIGHTRED_EX}Please provide answers to the security questions{Fore.RESET}")
                         return
-                    async with session.post("https://api.mojang.com/user/security/location", json=answers, headers=auth) as r:
-                        if r.status<300:
+                    async with session.post("https://api.mojang.com/user/security/location", json=answers,
+                                            headers=auth) as r:
+                        if r.status < 300:
                             print(f"{Fore.LIGHTGREEN_EX}Logged in{Fore.RESET}")
                         else:
                             print(f"{Fore.LIGHTRED_EX}Security Questions answers were incorrect{Fore.RESET}")
@@ -221,7 +230,9 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
         droptime = await get_droptime(target, session)
         offset = int(offset)
+        print(offset)
         snipe_time = droptime - (offset / 1000)
+        print(time.time())
         while time.time() < snipe_time:
             await asyncio.sleep(.001)
         coroutines = [
@@ -321,8 +332,7 @@ async def start() -> None:
             name = input(f"{Fore.CYAN}Name to snipe:  {Fore.RESET}")
             delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
             tuned_delay = delay
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(snipe(name, delay, token))
+            await snipe(name, delay, token)
         else:
             print(f"{Fore.LIGHTRED_EX}Please select a valid option{Fore.RESET}")
             input(f"{Fore.LIGHTRED_EX}Press enter to exit: {Fore.RESET}")
