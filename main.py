@@ -92,19 +92,23 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
-    async with session.get(
-            f"https://api.kqzz.me/api/namemc/droptime/{username}"
-    ) as r:
-        if r.status < 300:
-            r_json = await r.json()
-            droptime = r_json["droptime"]
-            print(f"Droptime: {droptime}")
-            return droptime
-        else:
-            print(f"{Fore.LIGHTRED_EX}Droptime for name not found, Please check if name is still dropping{Fore.RESET}")
-            time.sleep(2)
-            input(f"{Fore.LIGHTRED_EX}Press Enter to exit: {Fore.RESET}")
-            exit()
+    a = input("Input Date or Epoch (d/e): ")
+    if a == "e":
+        droptime = input("Input Drop Epoch: ")
+    if a == "d":
+        year = input("Year: ")
+        month = input("Month: ")
+        day = input("Day: ")
+        hour = input("Hour: ")
+        minute = input("Minute: ")
+        second = input("Second: ")
+
+        async with session.get("https://showcase.api.linx.twenty57.net/UnixTime/tounix?date=2021/05/10%2010:19:32") as r:
+            droptime = r.text
+            droptime.replace('"', '')
+    print(f"Droptime: {droptime}")
+
+    return droptime
 
 
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
