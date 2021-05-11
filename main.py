@@ -135,11 +135,11 @@ async def autosniper(bearer: str) -> None:
     names = requests.get("https://api.3user.xyz/list").json()
     delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
     tuned_delay = delay
+
     for nameseg in names:
 
         name = nameseg["name"]
-        droptime = nameseg["droptime"]
-        print(f"Sniping: {name}, Droptime: {droptime}")
+        print(f"Sniping: {name}")
         if tuned_delay is None:
             print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
             pass
@@ -250,8 +250,6 @@ async def automojangsniper(token: str) -> None:
     tuned_delay = delay
     for nameseg in names:
         name = nameseg["name"]
-        droptime = nameseg["droptime"]
-        print(f"Sniping: {name}, Droptime: {droptime}")
         if tuned_delay is None:
             print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
             pass
