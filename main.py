@@ -93,25 +93,34 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     async with session.get(
-            f"https://api.kqzz.me/api/namemc/droptime/{username}"
+            f"https://mojang-api.teun.lol/droptime/{username}"
     ) as r:
-        if r.status < 300:
+        try:
             r_json = await r.json()
-            droptime = r_json["droptime"]
-            print(f"Droptime: {droptime}")
+            droptime = r_json["UNIX"]
             return droptime
-        else:
-            print(f"{Fore.LIGHTRED_EX}Droptime for name not found, Please check if name is still dropping{Fore.RESET}")
-            time.sleep(2)
-            input(f"{Fore.LIGHTRED_EX}Press Enter to exit: {Fore.RESET}")
-            exit()
+        except:
+            prevOwner = input(f'{Fore.CYAN}What is the current username of the account that owned {username} before this?:   {Fore.RESET}')
+            r = requests.post('https://mojang-api.teun.lol/upload-droptime',
+                              json={'name': username, 'prevOwner': prevOwner})
+            print(r.text)
+            droptime = r.json()['UNIX']
+            return droptime
+
+    # else:
+        #     print(f"{Fore.LIGHTRED_EX}Droptime for name not found, Please check if name is still dropping{Fore.RESET}")
+        #     time.sleep(2)
+        #     input(f"{Fore.LIGHTRED_EX}Press Enter to exit: {Fore.RESET}")
+        #     exit()
 
 
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
         droptime = await get_droptime(target, session)
         offset = int(offset)
+        print(offset)
         snipe_time = droptime - (offset / 1000)
+        print(time.time())
         while time.time() < snipe_time:
             await asyncio.sleep(.001)
         coroutines = [
@@ -126,6 +135,7 @@ async def autosniper(bearer: str) -> None:
     names = requests.get("https://api.3user.xyz/list").json()
     delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
     tuned_delay = delay
+
     for nameseg in names:
 
         name = nameseg["name"]
@@ -220,7 +230,9 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
         droptime = await get_droptime(target, session)
         offset = int(offset)
+        print(offset)
         snipe_time = droptime - (offset / 1000)
+        print(time.time())
         while time.time() < snipe_time:
             await asyncio.sleep(.001)
         coroutines = [
@@ -238,7 +250,6 @@ async def automojangsniper(token: str) -> None:
     tuned_delay = delay
     for nameseg in names:
         name = nameseg["name"]
-        print(f"Sniping: {name}")
         if tuned_delay is None:
             print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
             pass
@@ -319,8 +330,7 @@ async def start() -> None:
             name = input(f"{Fore.CYAN}Name to snipe:  {Fore.RESET}")
             delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
             tuned_delay = delay
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(snipe(name, delay, token))
+            await snipe(name, delay, token)
         else:
             print(f"{Fore.LIGHTRED_EX}Please select a valid option{Fore.RESET}")
             input(f"{Fore.LIGHTRED_EX}Press enter to exit: {Fore.RESET}")
