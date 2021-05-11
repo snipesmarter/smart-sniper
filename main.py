@@ -4,9 +4,8 @@ from datetime import datetime
 import aiohttp
 import requests
 import warnings
-import sys
 import os
-from colorama import Fore, Back, Style
+from colorama import Fore
 from colorama import init
 
 init(convert=True, autoreset=True)
@@ -100,18 +99,13 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
             droptime = r_json["UNIX"]
             return droptime
         except:
-            prevOwner = input(f'{Fore.CYAN}What is the current username of the account that owned {username} before this?:   {Fore.RESET}')
+            prevOwner = input(
+                f'{Fore.CYAN}What is the current username of the account that owned {username} before this?:   {Fore.RESET}')
             r = requests.post('https://mojang-api.teun.lol/upload-droptime',
                               json={'name': username, 'prevOwner': prevOwner})
             print(r.text)
             droptime = r.json()['UNIX']
             return droptime
-
-    # else:
-        #     print(f"{Fore.LIGHTRED_EX}Droptime for name not found, Please check if name is still dropping{Fore.RESET}")
-        #     time.sleep(2)
-        #     input(f"{Fore.LIGHTRED_EX}Press Enter to exit: {Fore.RESET}")
-        #     exit()
 
 
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
@@ -170,8 +164,7 @@ async def send_mojang_request(s: aiohttp.ClientSession, bearer: str, name: str) 
 
 
 async def get_mojang_token(email: str, password: str) -> str:
-    # Login code is partially from mcsniperpy thx!
-    questions = []
+    # Partially sourced from MCsniperPY (https://github.com/MCsniperPY/MCsniperPY/blob/d76db9d364bac3dad3676b11a2a8dbbe04d02118/snipe.py#L205-L253), thanks! ^_^
 
     async with aiohttp.ClientSession() as session:
         authenticate_json = {"username": email, "password": password}
@@ -179,13 +172,12 @@ async def get_mojang_token(email: str, password: str) -> str:
                    "Content-Type": "application/json"}
         async with session.post("https://authserver.mojang.com/authenticate", json=authenticate_json,
                                 headers=headers) as r:
-            # print(r.status)
             if r.status == 200:
                 resp_json = await r.json()
-                # print(resp_json)
                 auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
                 access_token = resp_json["accessToken"]
-                print(f"{Fore.LIGHTGREEN_EX}Auth: {auth}\n\nAccess Token: {access_token}")
+                print(
+                    f"{Fore.LIGHTGREEN_EX}Auth: {auth}\n\nAccess Token: {access_token}")
             else:
                 print(f"{Fore.LIGHTRED_EX}INVALID CREDENTIALS{Fore.RESET}")
 
@@ -206,23 +198,27 @@ async def get_mojang_token(email: str, password: str) -> str:
                                 )
                                 exit()
                             else:
-                                print(f"{Fore.LIGHTGREEN_EX}Logged into your account successfully!{Fore.RESET}")
+                                print(
+                                    f"{Fore.LIGHTGREEN_EX}Logged into your account successfully!{Fore.RESET}")
                         except Exception:
                             print("logged in correctly")
                 else:
                     try:
                         for x in range(3):
                             ans = input(resp_json[x]["question"]["question"])
-                            answers.append({"id": resp_json[x]["answer"]["id"], "answer": ans})
+                            answers.append(
+                                {"id": resp_json[x]["answer"]["id"], "answer": ans})
                     except IndexError:
-                        print(f"{Fore.LIGHTRED_EX}Please provide answers to the security questions{Fore.RESET}")
+                        print(
+                            f"{Fore.LIGHTRED_EX}Please provide answers to the security questions{Fore.RESET}")
                         return
                     async with session.post("https://api.mojang.com/user/security/location", json=answers,
                                             headers=auth) as r:
                         if r.status < 300:
                             print(f"{Fore.LIGHTGREEN_EX}Logged in{Fore.RESET}")
                         else:
-                            print(f"{Fore.LIGHTRED_EX}Security Questions answers were incorrect{Fore.RESET}")
+                            print(
+                                f"{Fore.LIGHTRED_EX}Security Questions answers were incorrect{Fore.RESET}")
     return access_token
 
 
@@ -273,7 +269,6 @@ async def gather_mojang_info() -> None:
     elif style == "n":
         name = input(f"{Fore.CYAN}Name to snipe:  {Fore.RESET}")
         delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
-        tuned_delay = delay
         await mojang_snipe(name, delay, token)
 
 
@@ -296,7 +291,8 @@ async def start() -> None:
         f"and `m` for mojang and `ms` for microsoft accounts:  "
     )
     if mainset == "m":
-        print(f"{Fore.LIGHTGREEN_EX}Mojang Account Selected, using Mojang Sniper{Fore.RESET}")
+        print(
+            f"{Fore.LIGHTGREEN_EX}Mojang Account Selected, using Mojang Sniper{Fore.RESET}")
         await gather_mojang_info()
         return
     elif mainset == "ms":
