@@ -44,7 +44,7 @@ def store(droptime: int, offset: int) -> None:
     if int(finaldel[0]) != 0:
         changeversion = "inc"
         tuned_delay = 0
-        
+
         print(
             f"""{Fore.LIGHTRED_EX}Cannot tune your delay, please sync your time\n
             using http://www.thinkman.com/dimension4/download.htm
@@ -127,10 +127,9 @@ async def autosniper(bearer: str) -> None:
     delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
     tuned_delay = delay
     for nameseg in names:
-        
+
         name = nameseg["name"]
-        droptime = nameseg["droptime"]
-        print(f"Sniping: {name}, Droptime: {droptime}")
+        print(f"Sniping: {name}")
         if tuned_delay is None:
             print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
             pass
@@ -164,17 +163,16 @@ async def get_mojang_token(email: str, password: str) -> str:
     # Login code is partially from mcsniperpy thx!
     questions = []
 
-
     async with aiohttp.ClientSession() as session:
         authenticate_json = {"username": email, "password": password}
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0",
                    "Content-Type": "application/json"}
         async with session.post("https://authserver.mojang.com/authenticate", json=authenticate_json,
                                 headers=headers) as r:
-            #print(r.status)
+            # print(r.status)
             if r.status == 200:
                 resp_json = await r.json()
-                #print(resp_json)
+                # print(resp_json)
                 auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
                 access_token = resp_json["accessToken"]
                 print(f"{Fore.LIGHTGREEN_EX}Auth: {auth}\n\nAccess Token: {access_token}")
@@ -183,11 +181,11 @@ async def get_mojang_token(email: str, password: str) -> str:
 
         async with session.get("https://api.mojang.com/user/security/challenges", headers=auth) as r:
             answers = []
-            if r.status<300:
+            if r.status < 300:
                 resp_json = await r.json()
                 if resp_json == []:
                     async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange",
-                                headers={"Authorization": "Bearer " + access_token}) as nameChangeResponse:
+                                           headers={"Authorization": "Bearer " + access_token}) as nameChangeResponse:
                         ncjson = await nameChangeResponse.json()
                         print(ncjson)
                         try:
@@ -209,8 +207,9 @@ async def get_mojang_token(email: str, password: str) -> str:
                     except IndexError:
                         print(f"{Fore.LIGHTRED_EX}Please provide answers to the security questions{Fore.RESET}")
                         return
-                    async with session.post("https://api.mojang.com/user/security/location", json=answers, headers=auth) as r:
-                        if r.status<300:
+                    async with session.post("https://api.mojang.com/user/security/location", json=answers,
+                                            headers=auth) as r:
+                        if r.status < 300:
                             print(f"{Fore.LIGHTGREEN_EX}Logged in{Fore.RESET}")
                         else:
                             print(f"{Fore.LIGHTRED_EX}Security Questions answers were incorrect{Fore.RESET}")
@@ -239,8 +238,7 @@ async def automojangsniper(token: str) -> None:
     tuned_delay = delay
     for nameseg in names:
         name = nameseg["name"]
-        droptime = nameseg["droptime"]
-        print(f"Sniping: {name}, Droptime: {droptime}")
+        print(f"Sniping: {name}")
         if tuned_delay is None:
             print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
             pass
