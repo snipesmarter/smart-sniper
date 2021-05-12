@@ -92,20 +92,15 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     async with session.get(
-            f"https://mojang-api.teun.lol/droptime/{username}"
+            f"https://api.kqzz.me/api/namemc/droptime/{username}"
     ) as r:
         try:
             r_json = await r.json()
-            droptime = r_json["UNIX"]
+            droptime = r_json["droptime"]
             return droptime
         except:
-            prevOwner = input(
-                f'{Fore.CYAN}What is the current username of the account that owned {username} before this?:   {Fore.RESET}')
-            r = requests.post('https://mojang-api.teun.lol/upload-droptime',
-                              json={'name': username, 'prevOwner': prevOwner})
-            print(r.text)
-            droptime = r.json()['UNIX']
-            return droptime
+            print(f"{name} is not droping")
+            exit()
 
 
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
