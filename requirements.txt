@@ -1,3 +1,4 @@
 aiohttp
 requests
 colorama
+getpass
