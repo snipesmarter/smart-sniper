@@ -46,14 +46,14 @@ def get_config_data():
         menu = json.loads(e.read())
         print(menu)
         global namemc
-        namemc = bool(menu["namemc"])
+        namemc = menu["namemc"]
 
 get_config_data()
 
 
 def autonamemc(email, password  ):
     return
-
+    
 
 
 def store(droptime: int, offset: int) -> None:                        # Dodgy timing script!
@@ -312,7 +312,7 @@ async def gather_mojang_info() -> None:
         delay = input(f"Delay for snipe:  ")
         tuned_delay = delay
         await mojang_snipe(name, delay, token)
-        if namemc==True:
+        if namemc=="True":
             autonamemc(email, password)
 
 
@@ -346,7 +346,7 @@ async def start() -> None:
         print(
             f"{Fore.LIGHTGREEN_EX}Microsoft Account Selected, using Microsoft Sniper{Fore.RESET}"
         )
-        token = input(f"{Fore.CYAN}What is your bearer token:  {Fore.RESET}")
+        token = input(f"What is your bearer token:  ")
         style = input(
             "What sniper mode? Enter `a` for autosniper"
             " and `n` for single name sniping:  "
@@ -355,9 +355,9 @@ async def start() -> None:
             await automojangsniper(token)
             return
         elif style == "n":
-            name = input(f"{Fore.CYAN}Name to snipe:  {Fore.RESET}")
+            name = input(f"Name to snipe:  ")
             global delay
-            delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
+            delay = input(f"Delay for snipe:  ")
             global tuned_delay
             tuned_delay = delay
             await (mojang_snipe(name, delay, token))
@@ -365,21 +365,21 @@ async def start() -> None:
 
 
         reqnum=6
-        token = input(f"{Fore.CYAN}What is your bearer token:  {Fore.RESET}")
+        token = input(f"What is your bearer token:  ")
         style = input(
-            f"{Fore.CYAN}What sniper mode? Enter `a` for autosniper and{Fore.RESET}"
-            f"{Fore.CYAN} `n` for single name sniping:  {Fore.RESET}"
+            f"What sniper mode? Enter `a` for autosniper and"
+            f" `n` for single name sniping:  "
         )
         if style == "a":
             await autosniper(token)
         elif style == "n":
-            name = input(f"{Fore.CYAN}Name to snipe:  {Fore.RESET}")
-            delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
+            name = input(f"Name to snipe:  ")
+            delay = input(f"Delay for snipe:  ")
             tuned_delay = delay
             await snipe(name, delay, token)
         else:
-            print(f"{Fore.LIGHTRED_EX}Please select a valid option{Fore.RESET}")
-            input(f"{Fore.LIGHTRED_EX}Press enter to exit: {Fore.RESET}")
+            print(f"Please select a valid option")
+            input(f"Press enter to exit: ")
             exit()
     else:
         print("You did not enter a proper value. Ending.")
