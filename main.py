@@ -9,6 +9,7 @@ import requests
 from colorama import Fore
 from colorama import init
 import json
+import subprocess
 
 
 init(convert=True, autoreset=True)
@@ -33,22 +34,35 @@ global changeversion
 changeversion = ""
 global tuned_delay
 tuned_delay = None
+global success
+success=False
+
+reqnum = 3
+
 
 
 def get_config_data():
     with open("config.json") as e:
         menu = json.loads(e.read())
         print(menu)
-        namemc = menu["namemc"]
+        global namemc
+        namemc = bool(menu["namemc"])
 
 get_config_data()
 
+
+def autonamemc(email, password  ):
+    return
+
+
+
 def store(droptime: int, offset: int) -> None:                        # Dodgy timing script!
     print(offset, ": Delay Used")
+    global reqnum
     if reqnum == 3:
         set = 1
     else:
-        reqnum=6
+        set=2
     stamp = end[set]
     datetime_time = datetime.fromtimestamp(droptime)
     finaldel = str(stamp - datetime_time).split(":")[2].split(".")
@@ -102,6 +116,8 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
             f"{Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX} with the status {r.status}{Fore.RESET}"
         )
         end.append(datetime.now())
+        if await r.status()==200:
+            success=True
 
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
@@ -216,7 +232,7 @@ async def get_mojang_token(email: str, password: str) -> str:
                     async with session.get("https://api.minecraftservices.com/minecraft/profile/namechange",
                                            headers={"Authorization": "Bearer " + access_token}) as nameChangeResponse:
                         ncjson = await nameChangeResponse.json()
-                        # print(ncjson)
+                        print(ncjson)
                         try:
                             if ncjson["nameChangeAllowed"] is False:
                                 print(
@@ -281,8 +297,8 @@ async def automojangsniper(token: str) -> None:
 
 
 async def gather_mojang_info() -> None:
-    email = input(f"{Fore.CYAN}Account Email:  {Fore.RESET}")
-    password = getpass(f"{Fore.CYAN}Password:  {Fore.RESET}")
+    email = input(f"Account Email:  ")
+    password = getpass(f"Password:  ")
     print(password)
     token = await get_mojang_token(email, password)
     style = input(
@@ -292,10 +308,12 @@ async def gather_mojang_info() -> None:
     if style == "a":
         await automojangsniper(token)
     elif style == "n":
-        name = input(f"{Fore.CYAN}Name to snipe:  {Fore.RESET}")
-        delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
+        name = input(f"Name to snipe:  ")
+        delay = input(f"Delay for snipe:  ")
         tuned_delay = delay
         await mojang_snipe(name, delay, token)
+        if namemc==True:
+            autonamemc(email, password)
 
 
 async def iterate_through_names(session: aiohttp.ClientSession) -> None:
@@ -312,10 +330,9 @@ async def iterate_through_names(session: aiohttp.ClientSession) -> None:
 
 
 async def start() -> None:
-    global reqnum
     mainset = input(
         f"What account type? Enter `g` for giftcard snipes "
-        f"and `m` for mojang accounts and `ms` for microsoft accounts:  "
+        f"and `m` for mojang and `ms` for microsoft accounts:  "
     )
     if mainset == "m":
 
@@ -374,6 +391,7 @@ if __name__ == '__main__':
         warnings.filterwarnings("ignore", category=RuntimeWarning)
         loop = asyncio.get_event_loop()
         loop.run_until_complete(start())
+
     except Exception as e:
         print(e)
         print(f"{Fore.LIGHTRED_EX}An Error Occured, If this is unexpected please report the error to devs{Fore.RESET}")
