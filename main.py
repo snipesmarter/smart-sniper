@@ -4,15 +4,16 @@ import time
 import warnings
 from datetime import datetime
 from getpass import getpass
-
 import aiohttp
 import requests
 from colorama import Fore
 from colorama import init
+import json
+
 
 init(convert=True, autoreset=True)
 
-os.system("cls" if os.name == "nt" else "clear")
+# os.system("cls" if os.name == "nt" else "clear")
 logo = rf"""{Fore.GREEN}
   __  __ __  __  ___ _____    __  __  _ _ ___ ___ ___
 /' _/|  V  |/  \| _ \_   _| /' _/|  \| | | _,\ __| _ \
@@ -20,8 +21,10 @@ logo = rf"""{Fore.GREEN}
 |___/|_| |_|_||_|_|_\ |_|   |___/|_|\__|_|_| |___|_|_\
 """
 print(logo)
-print(Fore.BLUE + "Created by Coolkidmacho#7567" + Fore.RESET)
+print(Fore.BLUE + "Created by coolkidmacho#0001" + Fore.RESET)
 print(Fore.BLUE + "With the wonderful assistance of Kqzz#0001\n" + Fore.RESET)
+print("Make sure to join https://discord.gg/KweaD6G97f")
+print("If you want to boost or donate message coolkidmacho#0001 on discord")
 end = []
 orgdel = 0
 global delay
@@ -32,17 +35,24 @@ global tuned_delay
 tuned_delay = None
 
 
-def store(droptime: int, offset: int) -> None:
+def get_config_data():
+    with open("config.json") as e:
+        menu = json.loads(e.read())
+        print(menu)
+        namemc = menu["namemc"]
+
+get_config_data()
+
+def store(droptime: int, offset: int) -> None:                        # Dodgy timing script!
     print(offset, ": Delay Used")
     if reqnum == 3:
         set = 1
-    elif reqnum==6:
-        set = 2
+    else:
+        reqnum=6
     stamp = end[set]
     datetime_time = datetime.fromtimestamp(droptime)
-    ti = str(stamp - datetime_time)
-    print(ti)
-    finaldel = ti.split(":")[2].split(".")
+    finaldel = str(stamp - datetime_time).split(":")[2].split(".")
+
     print(finaldel)
     if int(finaldel[0]) != 0:
         changeversion = "inc"
@@ -103,13 +113,16 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
             droptime = r_json["UNIX"]
             return droptime
         except:
-            prevOwner = input(
-                f'{Fore.CYAN}What is the current username of the account that owned {username} before this?:   {Fore.RESET}')
-            r = requests.post('https://mojang-api.teun.lol/upload-droptime',
-                              json={'name': username, 'prevOwner': prevOwner})
-            print(r.text)
-            droptime = r.json()['UNIX']
-            return droptime
+            try:
+                prevOwner = input(
+                    f'{Fore.CYAN}What is the current username of the account that owned {username} before this?:   {Fore.RESET}')
+                r = requests.post('https://mojang-api.teun.lol/upload-droptime',
+                                  json={'name': username, 'prevOwner': prevOwner})
+                print(r.text)
+                droptime = r.json()['UNIX']
+                return droptime
+            except:
+                print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
 
     # else:
     #     print(f"{Fore.LIGHTRED_EX}Droptime for name not found, Please check if name is still dropping{Fore.RESET}")
@@ -120,12 +133,13 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
 
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
-        droptime = await get_droptime(target, session)
+        droptime = await get_droptime(target, session) # find the droptime!
         offset = int(offset)
         print(offset)
         snipe_time = droptime - (offset / 1000)
-        print(time.time())
-        print(f"sniping {target} at {droptime}")
+        print("current time in unix format is: ",time.time())
+        print("Calculating...")
+        print(f"sniping {target} at {droptime} unix time")
         while time.time() < snipe_time:
             await asyncio.sleep(.001)
         coroutines = [
@@ -227,7 +241,7 @@ async def get_mojang_token(email: str, password: str) -> str:
                         if r.status < 300:
                             print(f"{Fore.LIGHTGREEN_EX}Logged in{Fore.RESET}")
                         else:
-                            print(f"{Fore.LIGHTRED_EX}Security Questions answers were incorrect{Fore.RESET}")
+                            print(f"{Fore.LIGHTRED_EX}Security Questions answers were incorrect, restart the program!{Fore.RESET}")
     return access_token
 
 
@@ -300,8 +314,8 @@ async def iterate_through_names(session: aiohttp.ClientSession) -> None:
 async def start() -> None:
     global reqnum
     mainset = input(
-        f"What account type? Enter `g` for giftcard "
-        f"and `m` for mojang and `ms` for microsoft accounts:  "
+        f"What account type? Enter `g` for giftcard snipes "
+        f"and `m` for mojang accounts and `ms` for microsoft accounts:  "
     )
     if mainset == "m":
 
