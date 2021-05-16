@@ -116,7 +116,7 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
             f"{Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX} with the status {r.status}{Fore.RESET}"
         )
         end.append(datetime.now())
-        if await r.status()==200:
+        if await r.status==200:
             success=True
 
 
@@ -169,13 +169,14 @@ async def autosniper(bearer: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
     names = requests.get("https://api.3user.xyz/list").json()
     delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
-    delay = tuned_delay
+    if tuned_delay != None:
+        delay = tuned_delay
     print(tuned_delay, "tuned delay value")
 
     for nameseg in names:
         name = nameseg["name"]
         print(f"Sniping: {name}")
-        if tuned_delay is None:
+        if tuned_delay == None:
             print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
             pass
         else:
