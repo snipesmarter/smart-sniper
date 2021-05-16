@@ -172,7 +172,10 @@ async def autosniper(bearer: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
     names = requests.get("https://api.3user.xyz/list").json()
     delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
-    delay = tuned_delay
+    if tuned_delay==None:
+        pass
+    else:
+        delay = tuned_delay
     print(tuned_delay, "tuned delay value")
 
     for nameseg in names:
