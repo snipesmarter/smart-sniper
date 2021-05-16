@@ -61,19 +61,14 @@ def autonamemc(email, password  ):
 
 def store(droptime: int, offset: int) -> None:                        # Dodgy timing script!
     print(offset, ": Delay Used")
-    global reqnum
-    if reqnum == 3:
-        set = 1
-    else:
-        set=2
-    stamp = end[set]
+    stamp = end[1]
     datetime_time = datetime.fromtimestamp(droptime)
     finaldel = str(stamp - datetime_time).split(":")[2].split(".")
 
     print(finaldel)
     if int(finaldel[0]) != 0:
         changeversion = "inc"
-        tuned_delay = 0
+        tuned_delay = delay
 
         print(
             f"""{Fore.LIGHTRED_EX}Cannot tune your delay, please sync your time\n
