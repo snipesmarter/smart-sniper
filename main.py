@@ -53,7 +53,10 @@ get_config_data()
 
 def autonamemc(email, password  ):
     return
-    
+    cwd = os.getcwd()
+    os.chdir(f"{cwd}\\namemc")
+    # os.system("python setup.py install")
+    os.system(f"python start.py -u {email} -p {password}")
 
 
 def store(droptime: int, offset: int) -> None:                        # Dodgy timing script!
@@ -116,7 +119,7 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
             f"{Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX} with the status {r.status}{Fore.RESET}"
         )
         end.append(datetime.now())
-        if await r.status==200:
+        if r.status==200:
             success=True
 
 
@@ -169,14 +172,13 @@ async def autosniper(bearer: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
     names = requests.get("https://api.3user.xyz/list").json()
     delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
-    if tuned_delay != None:
-        delay = tuned_delay
+    delay = tuned_delay
     print(tuned_delay, "tuned delay value")
 
     for nameseg in names:
         name = nameseg["name"]
         print(f"Sniping: {name}")
-        if tuned_delay == None:
+        if tuned_delay is None:
             print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
             pass
         else:
@@ -387,12 +389,12 @@ async def start() -> None:
         exit()
 
 
-if __name__ == '__main__':
-    try:
-        warnings.filterwarnings("ignore", category=RuntimeWarning)
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(start())
-
-    except Exception as e:
-        print(e)
-        print(f"{Fore.LIGHTRED_EX}An Error Occured, If this is unexpected please report the error to devs{Fore.RESET}")
+# if __name__ == '__main__':
+#     try:
+#         warnings.filterwarnings("ignore", category=RuntimeWarning)
+loop = asyncio.get_event_loop()
+loop.run_until_complete(start())
+    #
+    # except Exception as e:
+    #     print(e)
+    #     print(f"{Fore.LIGHTRED_EX}An Error Occured, If this is unexpected please report the error to devs{Fore.RESET}")
