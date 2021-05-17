@@ -120,23 +120,16 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     async with session.get(
-            f"https://mojang-api.teun.lol/droptime/{username}"
+            f"https://api.gapple.pw/blocked/{username}"
     ) as r:
         try:
+
             r_json = await r.json()
-            droptime = r_json["UNIX"]
+            droptime = int(datetime.strptime(r_json['drop_time'],'%Y-%m-%dT%H:%M:%S.%fZ').timestamp())
+            # droptime = r_json["UNIX"]
             return droptime
         except:
-            try:
-                prevOwner = input(
-                    f'{Fore.CYAN}What is the current username of the account that owned {username} before this?:   {Fore.RESET}')
-                r = requests.post('https://mojang-api.teun.lol/upload-droptime',
-                                  json={'name': username, 'prevOwner': prevOwner})
-                print(r.text)
-                droptime = r.json()['UNIX']
-                return droptime
-            except:
-                print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
+            print("Name not dropping")
 
     # else:
     #     print(f"{Fore.LIGHTRED_EX}Droptime for name not found, Please check if name is still dropping{Fore.RESET}")
