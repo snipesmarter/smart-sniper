@@ -12,7 +12,8 @@ Smartsniper is a high tech adaptive sniper. This sniper's autosniping and automa
 - Auto Delay Tuning.
 - Gift Card Sniping.
 - Intuitive Gui.
-- Soon to come: Normal Sniping!
+- Normal Sniping!
+- Automatic Microsoft auth soon!
 
 Made By expert snipers!
 
