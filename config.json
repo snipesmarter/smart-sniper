@@ -1,3 +1,4 @@
 {
-  "namemc": "False" 
+  "namemc": "False", 
+  "msauth": "foo" 
 }
