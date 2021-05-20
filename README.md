@@ -17,7 +17,7 @@ Smartsniper is a high tech adaptive sniper. This sniper's autosniping and automa
 
 Made By expert snipers!
 
-Credits to [Kqzz] who made [McSniperPY]
+
 
 > The overriding design goal for smart sniper
 > is to make the experience for all users
@@ -160,14 +160,16 @@ GNU General Public License v3.0
 
 
 
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
-   [Kqzz]: <https://github.com/Kqzz>
-   [McSniperPy]: <https://mcsniperpy.com/>
 
 #### Credits
 
 Thanks to kqzz for like helping alot for this project.
-Thanks to kqzz's mcsniperpy project for code snippets in mojang auth!
-
+Thanks to [Kqzz]'s, [McSniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot!
 # Made by Coolkidmacho#7567
+
+
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+
+   [Kqzz]: <https://github.com/Kqzz>
+   [McSniperPy]: <https://mcsniperpy.com/>
