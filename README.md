@@ -50,7 +50,7 @@ python main.py
 #### Interacting with the program.
 
 ```sh
-What account type? Enter `g` for giftcard and `m` for mojang and `ms` for microsoft accounts: (choose your account)
+What account type? Enter `g` for giftcard snipes and `m` for mojang and `ms` for microsoft accounts, if you want to get your micorsoft/gc token automatically type `v`: (Choose your option)
 ```
 ### If you choose ms or gc you will be faced with this menu
 ```sh
@@ -122,6 +122,18 @@ Response received @ 2021-05-09 17:37:04.123321 with the status 200
 ['00', '123813']
 changeint 23
 delay: 265  tuned_delay  288
+```
+
+#### If you choose V you will be directed to this page
+
+
+```
+warning, if you have generated a token in the past 12 hours dont do it again your token is saved to the token txt file!, click enter to continue...
+NOTE: IF YOU HAVE NOT INSTALLED THE AUTHENTICATION SERVER GO HERE  ( https://github.com/coolkidmacho/McMsAuth ), THIS WILL NOT WORK WITHOUT IT, click enter to continue
+Microsoft email: (email)
+Microsoft password: (password)
+
+(your token!)
 ```
 
 ## Resources
