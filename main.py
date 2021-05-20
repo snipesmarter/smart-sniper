@@ -1,16 +1,13 @@
 import asyncio
+import json
 import os
 import time
-import warnings
 from datetime import datetime
-from getpass import getpass
+
 import aiohttp
 import requests
 from colorama import Fore
 from colorama import init
-import json
-import subprocess
-
 
 init(convert=True, autoreset=True)
 
@@ -35,10 +32,12 @@ changeversion = ""
 global tuned_delay
 tuned_delay = None
 global success
-success=False
+success = False
 
 reqnum = 3
 
+global mcsauth
+mcsauth = ""
 
 
 def get_config_data():
@@ -47,11 +46,13 @@ def get_config_data():
         print(menu)
         global namemc
         namemc = menu["namemc"]
+        msauth = menu["msauth"]
+
 
 get_config_data()
 
 
-def autonamemc(email, password  ):
+def autonamemc(email, password):
     return
     cwd = os.getcwd()
     os.chdir(f"{cwd}\\namemc")
@@ -59,9 +60,9 @@ def autonamemc(email, password  ):
     os.system(f"python start.py -u {email} -p {password}")
 
 
-def store(droptime: int, offset: int) -> None:                        # Dodgy timing script!
+def store(droptime: int, offset: int) -> None:  # Dodgy timing script!
     print(offset, ": Delay Used")
-    stamp = end[1]
+    stamp = end[0]
     datetime_time = datetime.fromtimestamp(droptime)
     finaldel = str(stamp - datetime_time).split(":")[2].split(".")
 
@@ -114,8 +115,8 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
             f"{Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX} with the status {r.status}{Fore.RESET}"
         )
         end.append(datetime.now())
-        if r.status==200:
-            success=True
+        if r.status == 200:
+            success = True
 
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
@@ -136,7 +137,8 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
                 droptime = r.json()['UNIX']
                 return droptime
             except:
-                print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
+                print(
+                    f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
 
     # else:
     #     print(f"{Fore.LIGHTRED_EX}Droptime for name not found, Please check if name is still dropping{Fore.RESET}")
@@ -147,11 +149,11 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
 
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
-        droptime = await get_droptime(target, session) # find the droptime!
+        droptime = await get_droptime(target, session)  # find the droptime!
         offset = int(offset)
         print(offset)
         snipe_time = droptime - (offset / 1000)
-        print("current time in unix format is: ",time.time())
+        print("current time in unix format is: ", time.time())
         print("Calculating...")
         print(f"sniping {target} at {droptime} unix time")
         while time.time() < snipe_time:
@@ -167,7 +169,7 @@ async def autosniper(bearer: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
     names = requests.get("https://api.3user.xyz/list").json()
     delay = input(f"{Fore.CYAN}Delay for snipe:  {Fore.RESET}")
-    if tuned_delay==None:
+    if tuned_delay == None:
         pass
     else:
         delay = tuned_delay
@@ -258,7 +260,8 @@ async def get_mojang_token(email: str, password: str) -> str:
                         if r.status < 300:
                             print(f"{Fore.LIGHTGREEN_EX}Logged in{Fore.RESET}")
                         else:
-                            print(f"{Fore.LIGHTRED_EX}Security Questions answers were incorrect, restart the program!{Fore.RESET}")
+                            print(
+                                f"{Fore.LIGHTRED_EX}Security Questions answers were incorrect, restart the program!{Fore.RESET}")
     return access_token
 
 
@@ -297,9 +300,28 @@ async def automojangsniper(token: str) -> None:
         await mojang_snipe(name, delay, token)
 
 
+def getok():
+    input("warning, if you have generated a token in the past 12 hours dont do it again!, click enter to continue...")
+    input(
+        "NOTE: IF YOU HAVE NOT INSTALLED THE AUTHENTICATION SERVER GO HERE  ( https://github.com/coolkidmacho/McMsAuth ), THIS WILL NOT WORK WITHOUT IT, click enter to continue")
+    email = input("Microsoft email:  ")
+    password = input("Microsoft Password:  ")
+    myinfo = {
+        "email": email,
+        "password": password
+    }
+    c = requests.post("http://localhost:8050/gettoken", myinfo)
+    token = json.loads(c.content)["token"]
+    file = open('token.txt', 'w')
+    file.write(token)
+    file.close()
+    print(token)
+    return token
+
+
 async def gather_mojang_info() -> None:
     email = input(f"Account Email:  ")
-    password = getpass(f"Password:  ")
+    password = input(f"Password:  ")
     print(password)
     token = await get_mojang_token(email, password)
     style = input(
@@ -313,7 +335,7 @@ async def gather_mojang_info() -> None:
         delay = input(f"Delay for snipe:  ")
         tuned_delay = delay
         await mojang_snipe(name, delay, token)
-        if namemc=="True":
+        if namemc == "True":
             autonamemc(email, password)
 
 
@@ -333,9 +355,11 @@ async def iterate_through_names(session: aiohttp.ClientSession) -> None:
 async def start() -> None:
     mainset = input(
         f"What account type? Enter `g` for giftcard snipes "
-        f"and `m` for mojang and `ms` for microsoft accounts:  "
+        f"and `m` for mojang and `ms` for microsoft accounts, if you want to get your micorsoft/gc token automatically type `v`:  "
     )
-    if mainset == "m":
+    if mainset == "v":
+        getok()
+    elif mainset == "m":
 
         reqnum = 3
         print(f"{Fore.LIGHTGREEN_EX}Mojang Account Selected, using Mojang Sniper{Fore.RESET}")
@@ -364,8 +388,7 @@ async def start() -> None:
             await (mojang_snipe(name, delay, token))
     elif mainset == "g":
 
-
-        reqnum=6
+        reqnum = 6
         token = input(f"What is your bearer token:  ")
         style = input(
             f"What sniper mode? Enter `a` for autosniper and"
@@ -392,7 +415,7 @@ async def start() -> None:
 #         warnings.filterwarnings("ignore", category=RuntimeWarning)
 loop = asyncio.get_event_loop()
 loop.run_until_complete(start())
-    #
-    # except Exception as e:
-    #     print(e)
-    #     print(f"{Fore.LIGHTRED_EX}An Error Occured, If this is unexpected please report the error to devs{Fore.RESET}")
+#
+# except Exception as e:
+#     print(e)
+#     print(f"{Fore.LIGHTRED_EX}An Error Occured, If this is unexpected please report the error to devs{Fore.RESET}")
