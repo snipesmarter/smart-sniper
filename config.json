@@ -1,4 +1,5 @@
 {
-  "namemc": "False", 
-  "msauth": "foo" 
+  "namemc": "False",
+  "msauth": "True",
+  "webhook": ""
 }
