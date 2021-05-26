@@ -13,7 +13,9 @@ Smartsniper is a high tech adaptive sniper. This sniper's autosniping and automa
 - Gift Card Sniping.
 - Intuitive Gui.
 - Normal Sniping!
-- Automatic Microsoft auth soon!
+- Automatic Microsoft auth!
+- Automatic NameMC Claiming
+- Webhook On Success
 
 Made By expert snipers!
 
@@ -124,7 +126,7 @@ changeint 23
 delay: 265  tuned_delay  288
 ```
 
-#### If you choose V you will be directed to this page
+#### If you choose V you will be directed to this section
 
 
 ```
@@ -135,16 +137,30 @@ Microsoft password: (password)
 
 (your token!)
 ```
+# NameMC Auto Claimer
+## Setup and Usage
+If you plan to use NameMC autoclaimer, you must be using mojang accounts, it works on windows and linux!
 
+Your first task is to unzip the file called `namemc` after doing that, follow these instructions to the T
+```sh
+cd namemc
+python setup.py install
+```
+This is a very important step, after completing this you can edit your config.json file to have namemc autoclaim to be ``True``.
+
+Thanks to Cypheriel#3837 for the original code, this could not be done without him, check him out here: [His github!](https://github.com/Cypheriel) 
 ## Resources
 
 Smart Sniper utilizes public api's made by me and others.
+
 
 | Plugin | LINK | REASON |
 | ------ | ------ | ------ |
 | 3USER | [https://api.3user.xyz/list](https://api.3user.xyz/list) | Public Api to check upcoming 3 letter names!
 | Kqzz's Api | [https://github.com/Kqzz/MC-API](https://github.com/Kqzz/MC-API) | To check droptimes for snipes.
 | Dimension4 | [http://www.thinkman.com/dimension4/download.htm](http://www.thinkman.com/dimension4/download.htm) | To sync time with world servers.
+| PyCraft | [https://github.com/ammaraskar/pyCraft](https://github.com/ammaraskar/pyCraft)| To AutoClaim namemc profiles.
+
 
 
 ## Development
@@ -166,6 +182,7 @@ GNU General Public License v3.0
 
 Thanks to kqzz for like helping alot for this project.
 Thanks to [Kqzz]'s, [McSniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot!
+Thanks to Cypheriel#3837 for the original namemc claim script, i could not have done it without him!
 # Made by Coolkidmacho#0001
 
 
