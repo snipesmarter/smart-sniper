@@ -130,7 +130,7 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     async with session.get(
-            f"https://api.kqzz.me/droptime/{username}"
+            f"https://mojang-api.teun.lol/droptime/{username}"
     ) as r:
         try:
             r_json = await r.json()
