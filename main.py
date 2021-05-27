@@ -2,7 +2,8 @@ import asyncio
 import json
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timezone
+
 import aiohttp
 import requests
 from colorama import Fore, Style, init
@@ -35,8 +36,8 @@ success = False
 reqnum = 3
 global mcsauth
 mcsauth = ""
-
 global webhook
+autoskin = True
 
 
 def inp(text):
@@ -118,10 +119,9 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
             json=json,
             headers=headers
     ) as r:
+
         print(
-            f"{Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX}Response received @ {datetime.now()}{Fore.RESET}"
-            f"{Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX} with the status {r.status}{Fore.RESET}"
-        )
+            f"{Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX}Response received @ {datetime.now()}{Fore.RESET} {Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX} with the status {r.status}{Fore.RESET}")
         end.append(datetime.now())
         if r.status == 200:
             print(f"{Fore.GREEN}C")
@@ -149,7 +149,6 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
             except:
                 print(
                     f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
-
 
 
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
@@ -282,7 +281,7 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
             await asyncio.sleep(.001)
         coroutines = [
             send_mojang_request(session, bearer_token, target)
-            for _ in range(3)
+            for _ in range(2)
         ]
         await asyncio.gather(*coroutines)
         store(droptime, offset)
@@ -340,25 +339,28 @@ async def gather_mojang_info() -> None:
         delay = inp(f"Delay for snipe:  ")
         tuned_delay = delay
         await mojang_snipe(name, delay, token)
-        if namemc == "True":
-            autonamemc(email, password)
-        if webhook != None:
-            webhookjson = {
-                "content": "",
-                "embeds": [
-                    {
-                        "title": f"You sniped {name}",
-                        "description": f"Congratulations on your new snipe!\n\nYou sniped {name.upper()}!",
-                        "color": 5814783,
-                        "footer": {
-                            "text": "Sniper Made by Coolkidmacho#0001"
+        if success == True:
+            if webhook != None:
+                snipedtime = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f%Z")
+
+                webhookjson = {
+                    "content": "",
+                    "embeds": [
+                        {
+                            "title": f"You sniped {name}",
+                            "description": f"Congratulations on your new snipe!\nYou sniped {name.upper()}! \nYou sniped {name} at exactly {snipedtime}",
+                            "color": 5814783,
+                            "footer": {
+                                "text": "Sniper Made by Coolkidmacho#0001"
+                            }
                         }
-                    }
-                ],
-                "username": "Smart Sniper",
-                "avatar_url": "https://cdn.discordapp.com/icons/840342619329658921/a_d3e87d7774f9c82b684c3a667e9cf23e.webp?size=128"
-            }
-            result = requests.post(webhook, json=webhookjson)
+                    ],
+                    "username": "Smart Sniper",
+                    "avatar_url": "https://cdn.discordapp.com/icons/840342619329658921/a_d3e87d7774f9c82b684c3a667e9cf23e.webp?size=128"
+                }
+                requests.post(webhook, json=webhookjson)
+            if namemc == "True":
+                autonamemc(email, password)
 
 
 async def iterate_through_names(session: aiohttp.ClientSession) -> None:
