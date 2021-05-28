@@ -3,7 +3,7 @@ import json
 import os
 import time
 from datetime import datetime, timezone
-
+import urllib.request
 import aiohttp
 import requests
 from colorama import Fore, Style, init
@@ -45,14 +45,23 @@ def inp(text):
     ret = input("")
     return ret
 
+def update():
+    c = requests.get("https://raw.githubusercontent.com/snipesmarter/smart-sniper/main/config.json")
+    file = open("config.json", "w")
+    file.write(json.dumps(c.json()))
+    file.close()
+    urllib.request.urlretrieve("https://raw.githubusercontent.com/snipesmarter/smart-sniper/main/skin.png", "skin.png")
 
+update()
 def get_config_data():
     with open("config.json") as e:
         menu = json.loads(e.read())
         # print(menu)
         global namemc
         namemc = menu["namemc"]
+        global msauth
         msauth = menu["msauth"]
+        global webhook
         webhook = menu["webhook"]
         if webhook == "":
             webhook = None
@@ -68,6 +77,19 @@ def autonamemc(email, password):
     # os.system("python setup.py install")
     os.system(f"python start.py -u {email} -p {password}")
 
+def changeskin(bearer):
+    print(bearer)
+    headers = {"Authorization": "Bearer "+bearer}
+    files = {
+        'variant': (None, 'classic'),
+        'file': ('skin.png', open('skin.png', 'rb')),
+    }
+    response = requests.post('https://api.minecraftservices.com/minecraft/profile/skins', headers=headers, files=files)
+    time.sleep(1)
+    if response.status_code==200 or response.status_code==204:
+        print(f"{Fore.GREEN}Successfully changed skin!")
+    else:
+        print(f"{Fore.RED}Failed to change skin.")
 
 def store(droptime: int, offset: int) -> None:  # Dodgy timing script!
     print(offset, ": Delay Used")
@@ -125,6 +147,7 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
         end.append(datetime.now())
         if r.status == 200:
             print(f"{Fore.GREEN}C")
+            global success
             success = True
 
 
@@ -167,6 +190,7 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
         ]
         await asyncio.gather(*coroutines)
         store(droptime, offset)
+        changeskin(bearer_token)
 
 
 async def autosniper(bearer: str) -> None:
@@ -208,6 +232,12 @@ async def send_mojang_request(s: aiohttp.ClientSession, bearer: str, name: str) 
             f"Response received @ {datetime.now()}"
             f" with the status {r.status}"
         )
+        global success
+        if r.status==200:
+
+            success=True
+        else:
+            success=False
         end.append(datetime.now())
 
 
@@ -339,28 +369,38 @@ async def gather_mojang_info() -> None:
         delay = inp(f"Delay for snipe:  ")
         tuned_delay = delay
         await mojang_snipe(name, delay, token)
+        print("doin")
         if success == True:
-            if webhook != None:
-                snipedtime = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f%Z")
+            try:
+                if webhook != None:
+                    snipedtime = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f%Z")
 
-                webhookjson = {
-                    "content": "",
-                    "embeds": [
-                        {
-                            "title": f"You sniped {name}",
-                            "description": f"Congratulations on your new snipe!\nYou sniped {name.upper()}! \nYou sniped {name} at exactly {snipedtime}",
-                            "color": 5814783,
-                            "footer": {
-                                "text": "Sniper Made by Coolkidmacho#0001"
+                    webhookjson = {
+                        "content": "",
+                        "embeds": [
+                            {
+                                "title": f"You sniped {name}",
+                                "description": f"Congratulations on your new snipe!\nYou sniped {name.upper()}! \nYou sniped {name} at exactly {snipedtime}",
+                                "color": 5814783,
+                                "footer": {
+                                    "text": "Sniper Made by Coolkidmacho#0001"
+                                }
                             }
-                        }
-                    ],
-                    "username": "Smart Sniper",
-                    "avatar_url": "https://cdn.discordapp.com/icons/840342619329658921/a_d3e87d7774f9c82b684c3a667e9cf23e.webp?size=128"
-                }
-                requests.post(webhook, json=webhookjson)
+                        ],
+                        "username": "Smart Sniper",
+                        "avatar_url": "https://cdn.discordapp.com/icons/840342619329658921/a_d3e87d7774f9c82b684c3a667e9cf23e.webp?size=128"
+                    }
+                    requests.post(webhook, json=webhookjson)
+            except:
+                print(f"{Fore.RED}Failed to send webhook!")
+            try:
+                changeskin(token)
+            except:
+                print(f"{Fore.RED}Failed to send change skin!")
+
             if namemc == "True":
                 autonamemc(email, password)
+
 
 
 async def iterate_through_names(session: aiohttp.ClientSession) -> None:
