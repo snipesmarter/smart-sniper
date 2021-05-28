@@ -151,6 +151,7 @@ This is a very important step, after completing this you can edit your config.js
 Thanks to Cypheriel#3837 for the original code, this could not be done without him, check him out here: [His github!](https://github.com/Cypheriel) 
 ## Resources
 
+
 Smart Sniper utilizes public api's made by me and others.
 
 
@@ -183,6 +184,7 @@ GNU General Public License v3.0
 Thanks to kqzz for like helping alot for this project.
 Thanks to [Kqzz]'s, [McSniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot!
 Thanks to Cypheriel#3837 for the original namemc claim script, i could not have done it without him!
+The microsoft authentication is from https://github.com/MohanadHosny/Microsoft-Minecraft-Auth, thank you very much to him for the msauth.py code!
 # Made by Coolkidmacho#0001
 
 
