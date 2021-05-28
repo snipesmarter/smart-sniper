@@ -283,7 +283,7 @@ async def get_mojang_token(email: str, password: str) -> str:
                             print("logged in correctly")
                 else:
                     try:
-                        for x in range(2):
+                        for x in range(3):
                             ans = inp({resp_json[x]["question"]["question"]})
                             answers.append({"id": resp_json[x]["answer"]["id"], "answer": ans})
                     except IndexError:
