@@ -1,5 +1,6 @@
 {
   "namemc": "False",
   "msauth": "True",
-  "webhook": ""
+  "webhook": "",
+  "searches": 100
 }
