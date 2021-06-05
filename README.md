@@ -5,8 +5,12 @@
 ## The most adaptive sniper in the industry 
 
 Smartsniper is a high tech adaptive sniper. This sniper's autosniping and automatic delay tuning assists in helping you obtain the best username possible!
+# Rewrite coming out soon!
+
 
 ## Features
+
+
 
 - Autosniping 3 Letters.
 - Auto Delay Tuning.
