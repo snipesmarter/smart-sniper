@@ -1,16 +1,20 @@
+import argparse
 import asyncio
 import json
 import os
 import time
-from datetime import datetime, timezone
 import urllib.request
+from datetime import datetime, timezone
+
 import aiohttp
 import requests
 from colorama import Fore, Style, init
 
+from msauth import login
+
 init(convert=True, autoreset=True)
 
-os.system("cls" if os.name == "nt" else "clear")
+# os.system("cls" if os.name == "nt" else "clear")
 logo = rf"""{Fore.GREEN}
   __  __ __  __  ___ _____    __  __  _ _ ___ ___ ___
 /' _/|  V  |/  \| _ \_   _| /' _/|  \| | | _,\ __| _ \
@@ -45,14 +49,18 @@ def inp(text):
     ret = input("")
     return ret
 
+
 def update():
     c = requests.get("https://raw.githubusercontent.com/snipesmarter/smart-sniper/main/config.json")
     file = open("config.json", "w")
-    file.write(json.dumps(c.json()))
+    file.write(json.dumps(c.json(), indent=2))
     file.close()
     urllib.request.urlretrieve("https://raw.githubusercontent.com/snipesmarter/smart-sniper/main/skin.png", "skin.png")
 
+
 update()
+
+
 def get_config_data():
     with open("config.json") as e:
         menu = json.loads(e.read())
@@ -65,6 +73,8 @@ def get_config_data():
         webhook = menu["webhook"]
         if webhook == "":
             webhook = None
+        global searches
+        searches = menu["searches"]
 
 
 get_config_data()
@@ -77,19 +87,21 @@ def autonamemc(email, password):
     # os.system("python setup.py install")
     os.system(f"python start.py -u {email} -p {password}")
 
+
 def changeskin(bearer):
-    print(bearer)
-    headers = {"Authorization": "Bearer "+bearer}
+    print(bearer, "this")
+    headers = {"Authorization": "Bearer " + bearer}
     files = {
         'variant': (None, 'classic'),
         'file': ('skin.png', open('skin.png', 'rb')),
     }
     response = requests.post('https://api.minecraftservices.com/minecraft/profile/skins', headers=headers, files=files)
     time.sleep(1)
-    if response.status_code==200 or response.status_code==204:
+    if response.status_code == 200 or response.status_code == 204:
         print(f"{Fore.GREEN}Successfully changed skin!")
     else:
         print(f"{Fore.RED}Failed to change skin.")
+
 
 def store(droptime: int, offset: int) -> None:  # Dodgy timing script!
     print(offset, ": Delay Used")
@@ -128,6 +140,39 @@ def store(droptime: int, offset: int) -> None:  # Dodgy timing script!
         print(f"{Fore.CYAN}Delay:{Fore.RESET} {offset}  {Fore.LIGHTGREEN_EX}Tuned Delay:{Fore.RESET}  {tuned_delay}")
 
 
+def custom(email, password):
+    if success == True:
+        try:
+            if webhook != None:
+                snipedtime = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f%Z")
+
+                webhookjson = {
+                    "content": "",
+                    "embeds": [
+                        {
+                            "title": f"You sniped {name}",
+                            "description": f"Congratulations on your new snipe!\nYou sniped {name.upper()}! \nYou sniped {name} at exactly {snipedtime}",
+                            "color": 5814783,
+                            "footer": {
+                                "text": "Sniper Made by Coolkidmacho#0001"
+                            }
+                        }
+                    ],
+                    "username": "Smart Sniper",
+                    "avatar_url": "https://cdn.discordapp.com/icons/840342619329658921/a_d3e87d7774f9c82b684c3a667e9cf23e.webp?size=128"
+                }
+                requests.post(webhook, json=webhookjson)
+        except:
+            print(f"{Fore.RED}Failed to send webhook!")
+        try:
+            changeskin(token)
+        except:
+            print(f"{Fore.RED}Failed to send change skin!")
+
+        if namemc == "True":
+            autonamemc(email, password)
+
+
 async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None:
     headers = {
         "Content-type": "application/json",
@@ -141,7 +186,6 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
             json=json,
             headers=headers
     ) as r:
-
         print(
             f"{Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX}Response received @ {datetime.now()}{Fore.RESET} {Fore.LIGHTRED_EX if r.status != 200 else Fore.LIGHTGREEN_EX} with the status {r.status}{Fore.RESET}")
         end.append(datetime.now())
@@ -194,8 +238,22 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
 
 
 async def autosniper(bearer: str) -> None:
-    print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-    names = requests.get("https://api.3user.xyz/list").json()
+    sel = inp(
+        f"For search based sniping select {Fore.GREEN}s{Fore.RESET}\nFor Auto 3char Enter {Fore.GREEN}3{Fore.RESET}")
+    if sel == "s":
+        try:
+            print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
+            names = requests.get(f"https://api.kqzz.me/api/namemc/upcoming/?searches={searches}").json()
+        except:
+            print(f"{Fore.Red}Failed to get searched names, report this to a support channel.{Fore.RESET}")
+    if sel == "3":
+        try:
+            print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
+            names = requests.get(f"https://api.3user.xyz/list").json()
+        except:
+            print(
+                f"{Fore.Red}Failed to get 3names names, report this to a support channel but dont ping anyone.{Fore.RESET}")
+
     delay = inp(f"Delay for snipe:  ")
     if tuned_delay == None:
         pass
@@ -233,11 +291,11 @@ async def send_mojang_request(s: aiohttp.ClientSession, bearer: str, name: str) 
             f" with the status {r.status}"
         )
         global success
-        if r.status==200:
+        if r.status == 200:
 
-            success=True
+            success = True
         else:
-            success=False
+            success = False
         end.append(datetime.now())
 
 
@@ -334,23 +392,6 @@ async def automojangsniper(token: str) -> None:
         await mojang_snipe(name, delay, token)
 
 
-def getok():
-    inp("warning, if you have generated a token in the past 12 hours dont do it again!, click enter to continue...")
-    inp(
-        "NOTE: IF YOU HAVE NOT INSTALLED THE AUTHENTICATION SERVER GO HERE  ( https://github.com/coolkidmacho/McMsAuth ), THIS WILL NOT WORK WITHOUT IT, click enter to continue")
-    email = inp("Microsoft email:  ")
-    password = inp("Microsoft Password:  ")
-    myinfo = {
-        "email": email,
-        "password": password
-    }
-    c = requests.post("http://localhost:8050/gettoken", myinfo)
-    token = json.loads(c.content)["token"]
-    file = open('token.txt', 'w')
-    file.write(token)
-    file.close()
-    print(token)
-    return token
 
 
 async def gather_mojang_info() -> None:
@@ -370,37 +411,7 @@ async def gather_mojang_info() -> None:
         tuned_delay = delay
         await mojang_snipe(name, delay, token)
         print("doin")
-        if success == True:
-            try:
-                if webhook != None:
-                    snipedtime = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f%Z")
-
-                    webhookjson = {
-                        "content": "",
-                        "embeds": [
-                            {
-                                "title": f"You sniped {name}",
-                                "description": f"Congratulations on your new snipe!\nYou sniped {name.upper()}! \nYou sniped {name} at exactly {snipedtime}",
-                                "color": 5814783,
-                                "footer": {
-                                    "text": "Sniper Made by Coolkidmacho#0001"
-                                }
-                            }
-                        ],
-                        "username": "Smart Sniper",
-                        "avatar_url": "https://cdn.discordapp.com/icons/840342619329658921/a_d3e87d7774f9c82b684c3a667e9cf23e.webp?size=128"
-                    }
-                    requests.post(webhook, json=webhookjson)
-            except:
-                print(f"{Fore.RED}Failed to send webhook!")
-            try:
-                changeskin(token)
-            except:
-                print(f"{Fore.RED}Failed to send change skin!")
-
-            if namemc == "True":
-                autonamemc(email, password)
-
+    custom(email, password)
 
 
 async def iterate_through_names(session: aiohttp.ClientSession) -> None:
@@ -421,12 +432,8 @@ async def start() -> None:
         f"\n\n{Fore.LIGHTBLUE_EX}What account type? \n"
         f"{Fore.LIGHTBLUE_EX}Enter {Fore.GREEN}g{Fore.RESET}{Fore.LIGHTBLUE_EX} for giftcard snipes \n"
         f"{Fore.LIGHTBLUE_EX}Enter {Fore.GREEN}m{Fore.RESET} {Fore.LIGHTBLUE_EX}for mojang snipes \n"
-        f"{Fore.LIGHTBLUE_EX}Enter {Fore.GREEN}ms{Fore.RESET} {Fore.LIGHTBLUE_EX}for microsoft snipes \n"
-        f"{Fore.LIGHTBLUE_EX}Enter {Fore.GREEN}v{Fore.RESET} {Fore.LIGHTBLUE_EX}for auto token:  "
-    )
-    if mainset == "v":
-        getok()
-    elif mainset == "m":
+        f"{Fore.LIGHTBLUE_EX}Enter {Fore.GREEN}ms{Fore.RESET} {Fore.LIGHTBLUE_EX}for microsoft snipes!:  ")
+    if mainset == "m":
 
         reqnum = 3
         print(f"{Fore.LIGHTGREEN_EX}Mojang Account Selected, using Mojang Sniper{Fore.RESET}")
@@ -434,11 +441,24 @@ async def start() -> None:
         return
     elif mainset == "ms":
 
-        reqnum = 3
         print(
             f"{Fore.LIGHTGREEN_EX}Microsoft Account Selected, using Microsoft Sniper{Fore.RESET}"
         )
-        token = inp(f"What is your bearer token:  ")
+        autype = inp(
+            f"To use microsoft email and password auth enter {Fore.GREEN}e{Fore.RESET}\n{Fore.YELLOW}To use Token enter {Fore.GREEN}t{Fore.RESET}:  ")
+        if autype.lower() == "e":
+            try:
+                email = inp(f"what is your microsoft email:  ")
+                password = inp("password:  ")
+                resp = login(email, password)
+                token = resp["access_token"]
+            except:
+                print(f"{Fore.RED}Failed MsAuth for you, use token.")
+                token = inp(f"What is your bearer token:  ")
+        elif autype.lower() == "t":
+            token = inp(f"What is your bearer token:  ")
+        else:
+            print(f"{Fore.RED}You did not select a valid option.")
         style = inp(
             "What sniper mode? Enter `a` for autosniper"
             " and `n` for single name sniping:  "
@@ -454,9 +474,29 @@ async def start() -> None:
             tuned_delay = delay
             await (mojang_snipe(name, delay, token))
     elif mainset == "g":
+        print(
+            f"{Fore.LIGHTGREEN_EX}Giftcard Selected, using Microsoft Sniper{Fore.RESET}"
+        )
 
         reqnum = 6
-        token = inp(f"What is your bearer token:  ")
+        autype = inp(
+            f"To use microsoft email and password auth enter {Fore.GREEN}e{Fore.RESET}\n{Fore.YELLOW}To use Token enter {Fore.GREEN}t{Fore.RESET}:  ")
+        if autype.lower() == "e":
+            try:
+                email = inp(f"what is your microsoft email:  ")
+                password = inp("password:  ")
+                resp = login(email, password)
+                token = resp["access_token"]
+            except:
+                print(f"{Fore.RED}Failed MsAuth for you, use token.")
+                token = inp(f"What is your bearer token:  ")
+
+        elif autype.lower() == "t":
+            token = inp(f"What is your bearer token:  ")
+        else:
+            print(f"{Fore.RED}You did not select a valid option.")
+            exit()
+
         style = inp(
             f"What sniper mode? Enter `a` for autosniper and"
             f" `n` for single name sniping:  "
@@ -477,12 +517,38 @@ async def start() -> None:
         exit()
 
 
-# if __name__ == '__main__':
-#     try:
-#         warnings.filterwarnings("ignore", category=RuntimeWarning)
-loop = asyncio.get_event_loop()
-loop.run_until_complete(start())
-#
-# except Exception as e:
-#     print(e)
-#     print(f"{Fore.LIGHTRED_EX}An Error Occured, If this is unexpected please report the error to devs{Fore.RESET}")
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-t", "--Type", help="Name")
+parser.add_argument("-n", "--Name", help="Name")
+parser.add_argument("-d", "--Delay", help="Delay")
+parser.add_argument("-e", "--Email", help="Email")
+parser.add_argument("-p", "--Password", help="Password")
+
+args = parser.parse_args()
+print(vars(args))
+boot = vars(args)
+if boot["Type"] != None:
+    mainset = boot["Type"]
+    email = boot["Email"]
+    password = boot["Password"]
+    delay = boot["Delay"]
+    name = boot["Name"]
+    if mainset == "m":
+        loop = asyncio.get_event_loop()
+        token = loop.run_until_complete(get_mojang_token(email, password))
+        asyncio.run(mojang_snipe(name, delay, token))
+        if success == True:
+            custom(email, password)
+    elif mainset == "ms":
+        resp = login(email, password)
+        token = resp["access_token"]
+        asyncio.run(mojang_snipe(name, delay, token))
+    elif mainset == "g":
+        resp = login(email, password)
+        token = resp["access_token"]
+        asyncio.run(snipe(name, delay, token))
+
+else:
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start())
