@@ -51,10 +51,10 @@ def inp(text):
 
 
 def update():
-    c = requests.get("https://raw.githubusercontent.com/snipesmarter/smart-sniper/main/config.json")
-    file = open("config.json", "w")
-    file.write(json.dumps(c.json(), indent=2))
-    file.close()
+#     c = requests.get("https://raw.githubusercontent.com/snipesmarter/smart-sniper/main/config.json")
+#     file = open("config.json", "w")
+#     file.write(json.dumps(c.json(), indent=2))
+#     file.close()
     urllib.request.urlretrieve("https://raw.githubusercontent.com/snipesmarter/smart-sniper/main/skin.png", "skin.png")
 
 
