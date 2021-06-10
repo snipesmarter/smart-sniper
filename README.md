@@ -1,5 +1,5 @@
 # Smart Sniper
-# Created and mentained on Coolkidmacho#0001
+# Created and mentained by Coolkidmacho#0001
 # JOIN THE DISCORD FOR LIVE UPDATES, POLLS AND SUPPORT https://discord.gg/KweaD6G97f
 
 ## The most adaptive sniper in the industry 
