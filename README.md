@@ -1,5 +1,5 @@
 # Smart Sniper
-
+# Created and mentained on by Coolkidmacho#0001
 # JOIN THE DISCORD FOR LIVE UPDATES, POLLS AND SUPPORT https://discord.gg/KweaD6G97f
 
 ## The most adaptive sniper in the industry 
@@ -189,7 +189,6 @@ Thanks to kqzz for like helping alot for this project.
 Thanks to [Kqzz]'s, [McSniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot!
 Thanks to Cypheriel#3837 for the original namemc claim script, i could not have done it without him!
 The microsoft authentication is from https://github.com/MohanadHosny/Microsoft-Minecraft-Auth, thank you very much to him for the msauth.py code!
-# Made by Coolkidmacho#0001
 
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
