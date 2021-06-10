@@ -1,5 +1,5 @@
 # Smart Sniper
-# Created and mentained on by Coolkidmacho#0001
+# Created and mentained on Coolkidmacho#0001
 # JOIN THE DISCORD FOR LIVE UPDATES, POLLS AND SUPPORT https://discord.gg/KweaD6G97f
 
 ## The most adaptive sniper in the industry 
@@ -186,7 +186,7 @@ GNU General Public License v3.0
 #### Credits
 
 Thanks to kqzz for like helping alot for this project.
-Thanks to [Kqzz]'s, [McSniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot!
+Thanks to [Kqzz]'s, [McSniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot and helping me along.
 Thanks to Cypheriel#3837 for the original namemc claim script, i could not have done it without him!
 The microsoft authentication is from https://github.com/MohanadHosny/Microsoft-Minecraft-Auth, thank you very much to him for the msauth.py code!
 
