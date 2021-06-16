@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import json
+from json.decoder import JSONDecodeError
 import os
 import time
 import urllib.request
@@ -377,7 +378,11 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
 
 async def automojangsniper(token: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-    names = requests.get("https://api.3user.xyz/list").json()
+    try:
+        names = requests.get("https://api.3user.xyz/list").json()
+    except JSONDecodeError:
+        print(f"Unable to use autosniper because usernames could not be parsed from API.")
+        exit()
     delay = inp(f"Delay for snipe:  ")
     print(tuned_delay, "tuned delay value")
     for nameseg in names:
