@@ -11,7 +11,7 @@ import aiohttp
 import requests
 from colorama import Fore, Style, init
 
-from msauth import login
+from msmcauth import login
 
 init(convert=True, autoreset=True)
 
