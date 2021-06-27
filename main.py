@@ -211,7 +211,7 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
         try:
             r_json = await r.json()
             print(r_json)
-            droptime = int(r_json["UNIX"])
+            droptime = int(float(r_json["UNIX"]))
             return droptime
         except:
             try:
