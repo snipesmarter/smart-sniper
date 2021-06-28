@@ -1,5 +1,5 @@
 # Smart Sniper
-# Created and mentained by Coolkidmacho#0001
+# Created and maintained by Coolkidmacho#0001
 # JOIN THE DISCORD FOR LIVE UPDATES, POLLS AND SUPPORT https://discord.gg/KweaD6G97f
 
 ## The most adaptive sniper in the industry 
@@ -13,15 +13,13 @@ Smartsniper is a high tech adaptive sniper. This sniper's autosniping and automa
 
 
 - Autosniping 3 Letters.
-- Auto Delay Tuning.
-- Gift Card Sniping.
-- Intuitive Gui.
-- Normal Sniping!
-- Automatic Microsoft auth!
+- Auto Delay Tuning
+- Gift Card Sniping
+- Intuitive GUI
+- Normal Sniping
+- Automatic Microsoft Authorization
 - Automatic NameMC Claiming
 - Webhook On Success
-
-Made By expert snipers!
 
 
 
