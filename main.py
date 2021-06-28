@@ -207,7 +207,7 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
-    async with session.get(f"https://api.coolkidmacho.com/droptime/{username}") as r:
+    async with session.get(f"http://api.coolkidmacho.com/droptime/{username}") as r:
         try:
             r_json = await r.json()
             print(r_json)
@@ -265,7 +265,7 @@ async def autosniper(bearer: str) -> None:
     if sel == "3":
         try:
             print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-            names = requests.get(f"https://api.3user.xyz/list").json()
+            names = requests.get(f"").json()
         except:
             print(
                 f"{Fore.Red}Failed to get 3names names, report this to a support channel but dont ping anyone.{Fore.RESET}"
@@ -406,7 +406,7 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
 
 async def automojangsniper(token: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-    names = requests.get("https://api.3user.xyz/list").json()
+    names = requests.get("http://api.coolkidmacho.com/three").json()
     delay = inp(f"Delay for snipe:  ")
     print(tuned_delay, "tuned delay value")
     for nameseg in names:
