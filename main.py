@@ -14,7 +14,9 @@ from msauth import login
 
 init(convert=True, autoreset=True)
 
-# os.system("cls" if os.name == "nt" else "clear")
+cl = False
+if cl:
+    os.system("cls" if os.name == "nt" else "clear")
 logo = rf"""{Fore.GREEN}
   __  __ __  __  ___ _____    __  __  _ _ ___ ___ ___
 /' _/|  V  |/  \| _ \_   _| /' _/|  \| | | _,\ __| _ \
