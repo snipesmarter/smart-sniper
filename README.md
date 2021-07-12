@@ -1,38 +1,38 @@
 # Smart Sniper
-# Created and maintained by Coolkidmacho#0001
-# JOIN THE DISCORD FOR LIVE UPDATES, POLLS AND SUPPORT https://discord.gg/KweaD6G97f
+
+Created and maintained by Coolkidmacho#0001
+
+### JOIN THE DISCORD FOR LIVE UPDATES, POLLS AND SUPPORT https://discord.gg/KweaD6G97f
 
 ## The most adaptive sniper in the industry 
 
-Smartsniper is a high tech adaptive sniper. This sniper's autosniping and automatic delay tuning assists in helping you obtain the best username possible!
-# Rewrite coming out soon!
-
+SmartSniper is a high tech adaptive sniper. This sniper's autosniping and automatic delay tuning assists in helping you obtain the best username possible!
+**Rewrite coming out soon!**
 
 ## Features
 
-
-
-- Autosniping 3 Letters.
+- Autosniping 3 Letters
 - Auto Delay Tuning
 - Gift Card Sniping
-- Intuitive GUI
+- Intuitive CUI
 - Normal Sniping
 - Automatic Microsoft Authorization
 - Automatic NameMC Claiming
-- Webhook On Success
+- Webhook on Success
 
 
 
-> The overriding design goal for smart sniper
+> The overseeing design goal for SmartSniper
 > is to make the experience for all users
 > to be as interactive and hands free as possible.
 
-We hope to make the sniping experience so automated that once you let it run it will snipe a name without any interaction
-# Warning this is a very first release, there are bugs we need to squash.
-## Installation
+We hope to make the sniping experience so automated that once you let it run, it will snipe a name without any interaction.
+#### WARNING: This is not stable yet. There will be bugs that need to be fixed. We are not liable for any missed names.
+
+# Installation
 
 SmartSniper requires [Python v3.8](https://www.python.org/downloads/release/python-3811/) to run.
-It also helps to install [Git](https://git-scm.com/download/win)
+It also helps to install [Git](https://git-scm.com/download/win) for installation of SmartSniper.
 
 Install the dependencies and start the program.
 
@@ -41,26 +41,29 @@ git clone https://github.com/snipesmarter/smart-sniper.git
 cd smart-sniper
 pip install -r requirements.txt
 ```
-You can replace the first step with just downloading the zipped file of this and extracting.
+You can replace the first step with just downloading the zipped file of this and extracting. You will need to open CMD/*sh to the folder afterwards, however.
 
 # Usage
 
-## AutoSniping
+## Starting the program
 
-Open command prompt in the folder and run this command!
+Open CMD/*sh in the folder and run this command:
 ```sh
 python main.py
 ```
-#### Interacting with the program.
+
+## Choosing a mode
 
 ```sh
 What account type? Enter `g` for giftcard snipes and `m` for mojang and `ms` for microsoft accounts, if you want to get your micorsoft/gc token automatically type `v`: (Choose your option)
 ```
-### If you choose ms or gc you will be faced with this menu
+
+### MS (ms) or GC (g)
 ```sh
 What is your bearer token:  (look at the section below if you dont know what this means, or how to get it!)
 ```
-#### If you choose mojang you will be faced with this menu
+
+### Mojang (m)
 ```sh
 selected mojang account, transferring to mojang sniper.
 Account Email: (enter your mojang email here)
@@ -69,7 +72,11 @@ Password:   (enter your password here)
 {clientToken: , accessToken: }
 200
 ```
-Then you will both be directed to this menu
+
+## Choosing a mode
+Here, you will choose autosniper or manual sniping.
+
+### Autosniping
 ```sh
 What sniper mode? Enter `a` for autosniper and `n` for single name sniping: a
 starting
@@ -79,10 +86,12 @@ delay tuned
 delay is now: 0
 droptime: 1620408382
 ```
-Now you are set to autosnipe with your giftcard
+Now you are set to autosnipe with your giftcard.
 
-## How to get your bearer token?
-To get your bearer token 
+## How to get a bearer token
+
+### Manually
+To get your bearer token manually:
  - Sign in to your Minecraft account at minecraft.net
  - open the chrome / firefox dev tools (ctrl + shift + i) or right click and click inspect
  - Go to the "console" tab
@@ -90,46 +99,11 @@ To get your bearer token
 ```js
 console.log(document.cookie.match(/bearer_token=([^;]+)/)?.[1] ?? 'There is no bearer token in your cookies, make sure you are on minecraft.net and that you are logged into your account.')
 ```
-Copy the output and you will now have your bearer token!
+Copy the output, this is your bearer token.
 
 [Source][bearer-info]
 
-# Normal Sniping
-
-```sh
-What account type? Enter `g` for giftcard and `m` for mojang and `ms` for microsoft accounts: (choose your account)
-```
-### If you choose ms or gc you will be faced with this menu
-```sh
-What is your bearer token:  (look at the section below if you dont know what this means, or how to get it!)
-```
-#### If you choose mojang you will be faced with this menu
-```sh
-selected mojang account, transferring to mojang sniper.
-Account Email: (enter your mojang email here)
-Password:   (enter your password here)
-200
-{clientToken: , accessToken: }
-200
-```
-Then you will both be directed to this menu
-```sh
-What sniper mode? Enter `a` for autosniper and `n` for single name sniping: n
-what name do you want to snipe:  (enter the name you want to snipe)
-what delay do you want:  (try 250 at the start)
-droptime: 1620607024 (this will vary on the name)
-Response received @ 2021-05-09 17:37:04.086939 with the status 429
-Response received @ 2021-05-09 17:37:04.105448 with the status 403
-Response received @ 2021-05-09 17:37:04.123321 with the status 200
-265 inputted delay
-0:00:00.123813
-['00', '123813']
-changeint 23
-delay: 265  tuned_delay  288
-```
-
-#### If you choose V you will be directed to this section
-
+### Getting your bearer token with V
 
 ```
 warning, if you have generated a token in the past 12 hours dont do it again your token is saved to the token txt file!, click enter to continue...
@@ -137,51 +111,79 @@ NOTE: IF YOU HAVE NOT INSTALLED THE AUTHENTICATION SERVER GO HERE  ( https://git
 Microsoft email: (email)
 Microsoft password: (password)
 
-(your token!)
+(your token)
 ```
-# NameMC Auto Claimer
-## Setup and Usage
-If you plan to use NameMC autoclaimer, you must be using mojang accounts, it works on windows and linux!
 
-Your first task is to unzip the file called `namemc` after doing that, follow these instructions to the T
+# NameMC Auto Claimer
+
+## Setup and Usage
+If you plan to use NameMC auto-claimer, you must be using Mojang accounts. This process works on Windows and Linux.
+
+Your first task is to unzip the file called `namemc` after doing that, follow these instructions to the T (run in CMD/*sh):
+
 ```sh
 cd namemc
 python setup.py install
 ```
-This is a very important step, after completing this you can edit your config.json file to have namemc autoclaim to be ``True``.
+This is a very important step. Sfter completing this, edit your config.json file to have NameMC autoclaim set to `True`.
 
-Thanks to Cypheriel#3837 for the original code, this could not be done without him, check him out here: [His github!](https://github.com/Cypheriel) 
-## Resources
+Thanks to Cypheriel#3837 for the original code, this could not be done without him. Check him out here: [GitHub](https://github.com/Cypheriel) 
 
-
-Smart Sniper utilizes public api's made by me and others.
+# Resources
 
 
-| Plugin | LINK | REASON |
-| ------ | ------ | ------ |
-| 3USER | [https://api.3user.xyz/list](https://api.3user.xyz/list) | Public Api to check upcoming 3 letter names!
-| Kqzz's Api | [https://github.com/Kqzz/MC-API](https://github.com/Kqzz/MC-API) | To check droptimes for snipes.
-| Dimension4 | [http://www.thinkman.com/dimension4/download.htm](http://www.thinkman.com/dimension4/download.htm) | To sync time with world servers.
-| PyCraft | [https://github.com/ammaraskar/pyCraft](https://github.com/ammaraskar/pyCraft)| To AutoClaim namemc profiles.
+Smart Sniper utilizes public APIs and software made by me and others.
+
+ - 3USER
+   - Public API to check upcoming 3 letter names.
+   - [https://api.3user.xyz/list](https://api.3user.xyz/list)
+ - Kqzz's API
+   - Used to determine drop times.
+   - [https://github.com/Kqzz/MC-API](https://github.com/Kqzz/MC-API)
+ - PyCraft
+   - Used to help auto-claim NameMC profiles.
+   - [https://github.com/ammaraskar/pyCraft](https://github.com/ammaraskar/pyCraft)
+ - Dimension 4
+   - Used to sync time with world time servers (NTP).
+   - [http://www.thinkman.com/dimension4/download.htm](http://www.thinkman.com/dimension4/download.htm)
+
+<!-- 
+
+Suggested edits:
+ - make Dimension 4 categorized as recommended for usage and not utilized.
+
+-->
 
 
 
-## Development
+# Development
 
 Want to contribute? Great!
 
-Contribute to our github at [https://github.com/snipesmarter/smart-sniper/](https://github.com/snipesmarter/smart-sniper/)
+Contribute to our GitHub at [https://github.com/snipesmarter/smart-sniper/](https://github.com/snipesmarter/smart-sniper/).
 
+Here are some suggested contributions:
+ - Work on issues!
+   - Fix bugs, determine invalid or valid, get info.
+ - Vanity edits!
+   - Things like tidying the README, cleaning code, etc.
+
+Note that you don't have to do one something from this list, it's just some ideas.
 
 ## License
 
-GNU General Public License v3.0
+SmartSniper is licensed under the GNU General Public License v3.0.
 
+You may:
+ - Commercially use this software.
+   - Make sure to disclose source upon request if done.
+ - Modify and redistribute.
+   - Disclose modifications and keep the license the same.
+ - Patent and private use.
 
+Head to /LICENSE for full license information.
 
-
-
-#### Credits
+## Credits
 
 Thanks to kqzz for like helping alot for this project.
 Thanks to [Kqzz]'s, [MCsniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot and helping me along.
@@ -190,12 +192,12 @@ The microsoft authentication is from https://github.com/MohanadHosny/Microsoft-M
 
 <!-- 
 
-Suggested edits:
+Suggested text:
 
 Thanks to @kqzz for:
  - helping a lot with this project
  - code snippets from [MCsniperPY](https://github.com/MCsniperPY) for Mojang authentication
-Thanks to Cypheriel#3837 on Discord for:
+Thanks to [Cypheriel#3837 on Discord](https://github.com/Cypheriel) for:
  - NameMC automatic claim script
 Thanks to @MohanadHosny for:
  - Microsoft authentication code (specifically `msauth.py`).
