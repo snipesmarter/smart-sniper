@@ -29,6 +29,27 @@ SmartSniper is a high tech adaptive sniper. This sniper's autosniping and automa
 We hope to make the sniping experience so automated that once you let it run, it will snipe a name without any interaction.
 #### WARNING: This is not stable yet. There will be bugs that need to be fixed. We are not liable for any missed names.
 
+# Table of Contents
+
+ - [Installation](#installation)
+ - [Usage](#usage)
+   * [Starting the program](#starting-the-program)
+   * [Choosing acoount type](#choosing-account-type)
+     + [MS or GC](#ms-ms-or-gc-g)
+     + [Mojang](#mojang-m)
+   * [Choosing a mode](#choosing-a-mode)
+     + [Autosniping](#autosniping)
+     + [Manual](#manual)
+   * [How to get a bearer token](#how-to-get-a-bearer-token)
+     + [Manually](#manually)
+     + [Getting your bearer token with V](#getting-your-bearer-token-with-v)
+ - [NameMC Auto Claimer](#namemc-auto-claimer)
+   * [Setup and Usage](#setup-and-usage)
+ - [Development](#development)
+ - [License](#license)
+ - [Credits](#credits)
+
+
 # Installation
 
 SmartSniper requires [Python v3.8](https://www.python.org/downloads/release/python-3811/) to run.
@@ -41,7 +62,7 @@ git clone https://github.com/snipesmarter/smart-sniper.git
 cd smart-sniper
 pip install -r requirements.txt
 ```
-You can replace the first step with just downloading the zipped file of this and extracting. You will need to open CMD/*sh to the folder afterwards, however.
+You can replace the first step with just downloading the zipped file of this and extracting. You will, however, need to open CMD/*sh to the folder afterwards.
 
 # Usage
 
@@ -52,7 +73,7 @@ Open CMD/*sh in the folder and run this command:
 python main.py
 ```
 
-## Choosing a mode
+## Choosing acoount type
 
 ```sh
 What account type? Enter `g` for giftcard snipes and `m` for mojang and `ms` for microsoft accounts, if you want to get your micorsoft/gc token automatically type `v`: (Choose your option)
@@ -87,6 +108,23 @@ delay is now: 0
 droptime: 1620408382
 ```
 Now you are set to autosnipe with your giftcard.
+
+### Manual
+
+```sh
+What sniper mode? Enter `a` for autosniper and `n` for single name sniping: n
+what name do you want to snipe:  (enter the name you want to snipe)
+what delay do you want:  (try 250 at the start)
+droptime: 1620607024 (this will vary on the name)
+Response received @ 2021-05-09 17:37:04.086939 with the status 429
+Response received @ 2021-05-09 17:37:04.105448 with the status 403
+Response received @ 2021-05-09 17:37:04.123321 with the status 200
+265 inputted delay
+0:00:00.123813
+['00', '123813']
+changeint 23
+delay: 265  tuned_delay  288
+```
 
 ## How to get a bearer token
 
@@ -125,14 +163,14 @@ Your first task is to unzip the file called `namemc` after doing that, follow th
 cd namemc
 python setup.py install
 ```
-This is a very important step. Sfter completing this, edit your config.json file to have NameMC autoclaim set to `True`.
+This is a very important step. After completing this, edit your config.json file to have NameMC autoclaim set to `True`.
 
 Thanks to Cypheriel#3837 for the original code, this could not be done without him. Check him out here: [GitHub](https://github.com/Cypheriel) 
 
 # Resources
 
 
-Smart Sniper utilizes public APIs and software made by me and others.
+Smart Sniper utilizes public APIs and software made by me (@coolkidmacho) and others.
 
  - 3USER
    - Public API to check upcoming 3 letter names.
@@ -170,7 +208,7 @@ Here are some suggested contributions:
 
 Note that you don't have to do one something from this list, it's just some ideas.
 
-## License
+# License
 
 SmartSniper is licensed under the GNU General Public License v3.0.
 
@@ -183,7 +221,7 @@ You may:
 
 Head to /LICENSE for full license information.
 
-## Credits
+# Credits
 
 Thanks to kqzz for like helping alot for this project.
 Thanks to [Kqzz]'s, [MCsniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot and helping me along.
