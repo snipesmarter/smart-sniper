@@ -34,7 +34,7 @@ We hope to make the sniping experience so automated that once you let it run, it
  - [Installation](#installation)
  - [Usage](#usage)
    * [Starting the program](#starting-the-program)
-   * [Choosing acoount type](#choosing-account-type)
+   * [Choosing account type](#choosing-account-type)
      + [MS or GC](#ms-ms-or-gc-g)
      + [Mojang](#mojang-m)
    * [Choosing a mode](#choosing-a-mode)
@@ -73,7 +73,7 @@ Open CMD/*sh in the folder and run this command:
 python main.py
 ```
 
-## Choosing acoount type
+## Choosing account type
 
 ```sh
 What account type? Enter `g` for giftcard snipes and `m` for mojang and `ms` for microsoft accounts, if you want to get your micorsoft/gc token automatically type `v`: (Choose your option)
