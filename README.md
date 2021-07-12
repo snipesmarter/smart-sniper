@@ -31,8 +31,8 @@ We hope to make the sniping experience so automated that once you let it run it 
 # Warning this is a very first release, there are bugs we need to squash.
 ## Installation
 
-SmartSniper requires [Python](https://www.python.org/) v3.8 to run.
-It also helps to install [Git Bash](https://git-scm.com/download/win)
+SmartSniper requires [Python v3.8](https://www.python.org/downloads/release/python-3811/) to run.
+It also helps to install [Git](https://git-scm.com/download/win)
 
 Install the dependencies and start the program.
 
@@ -41,7 +41,7 @@ git clone https://github.com/snipesmarter/smart-sniper.git
 cd smart-sniper
 pip install -r requirements.txt
 ```
-You can replace the first step with just downloading the ziped file of this.
+You can replace the first step with just downloading the zipped file of this and extracting.
 
 # Usage
 
@@ -86,13 +86,13 @@ To get your bearer token
  - Sign in to your Minecraft account at minecraft.net
  - open the chrome / firefox dev tools (ctrl + shift + i) or right click and click inspect
  - Go to the "console" tab
- - paste this code into the console:
+ - paste the following code into the console:
 ```js
 console.log(document.cookie.match(/bearer_token=([^;]+)/)?.[1] ?? 'There is no bearer token in your cookies, make sure you are on minecraft.net and that you are logged into your account.')
 ```
-Now you have your bearer token!
+Copy the output and you will now have your bearer token!
 
-Information from: https://kqzz.github.io/mc-bearer-token/ and danktrain#0001
+[Source][bearer-info]
 
 # Normal Sniping
 
@@ -184,12 +184,28 @@ GNU General Public License v3.0
 #### Credits
 
 Thanks to kqzz for like helping alot for this project.
-Thanks to [Kqzz]'s, [McSniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot and helping me along.
+Thanks to [Kqzz]'s, [MCsniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot and helping me along.
 Thanks to Cypheriel#3837 for the original namemc claim script, i could not have done it without him!
 The microsoft authentication is from https://github.com/MohanadHosny/Microsoft-Minecraft-Auth, thank you very much to him for the msauth.py code!
 
+<!-- 
+
+Suggested edits:
+
+Thanks to @kqzz for:
+ - helping a lot with this project
+ - code snippets from [MCsniperPY](https://github.com/MCsniperPY) for Mojang authentication
+Thanks to Cypheriel#3837 on Discord for:
+ - NameMC automatic claim script
+Thanks to @MohanadHosny for:
+ - Microsoft authentication code (specifically `msauth.py`).
+   - Found at https://github.com/MohanadHosny/Microsoft-Minecraft-Auth
+
+
+-->
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
    [Kqzz]: <https://github.com/Kqzz>
-   [McSniperPy]: <https://mcsniperpy.com/>
+   [MCsniperPY]: <https://mcsniperpy.com/>
+   [bearer-info]: <https://kqzz.github.io/mc-bearer-token/>
