@@ -24,11 +24,11 @@ logo = rf"""{Fore.GREEN}
 |___/|_| |_|_||_|_|_\ |_|   |___/|_|\__|_|_| |___|_|_\
 """
 print(logo)
-print(Fore.LIGHTCYAN_EX + Style.BRIGHT + "Created by Coolkidmacho#0001" + Fore.RESET)
+print(Fore.LIGHTCYAN_EX + Style.BRIGHT + "Created by Coolkidmacho#1000" + Fore.RESET)
 print(Fore.LIGHTCYAN_EX + "With the wonderful assistance of Kqzz#0001" + Fore.RESET)
 print(f"{Fore.MAGENTA}Make sure to join https://discord.gg/KweaD6G97f\n")
 print(
-    f"{Style.BRIGHT}{Fore.YELLOW}If you want to boost or donate message Coolkidmacho#0001 on discord"
+    f"{Style.BRIGHT}{Fore.YELLOW}If you want to boost or donate message Coolkidmacho#1000 on discord"
 )
 # print(f"{Style.DIM}This file is fully editable and changable, but all changes must be open source, changing the logo or the credits are against the request of the owner.")
 end = []
@@ -170,7 +170,7 @@ def custom(email, password):
                             "title": f"You sniped {name}",
                             "description": f"Congratulations on your new snipe!\nYou sniped {name.upper()}! \nYou sniped {name} at exactly {snipedtime}",
                             "color": 5814783,
-                            "footer": {"text": "Sniper Made by Coolkidmacho#0001"},
+                            "footer": {"text": "Sniper Made by Coolkidmacho#1000"},
                         }
                     ],
                     "username": "Smart Sniper",
