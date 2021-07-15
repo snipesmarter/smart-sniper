@@ -257,8 +257,7 @@ async def autosniper(bearer: str) -> None:
     if sel == "s":
         try:
             print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-            names = requests.get(
-                f"https://api.kqzz.me/api/namemc/upcoming/?searches={searches}"
+            names = requests.get("http://api.coolkidmacho.com/search/{searches}"
             ).json()
         except:
             print(
