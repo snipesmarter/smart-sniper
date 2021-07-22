@@ -1,4 +1,5 @@
 # Smart Sniper
+## Donations are appreciated for testing and further development, they also help me out.
 
 Created and maintained by Coolkidmacho#0001
 
