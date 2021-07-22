@@ -1,7 +1,6 @@
 # Smart Sniper
-## Donations are appreciated for testing and further development, they also help me out.
-
 Created and maintained by Coolkidmacho#0001
+## Donations are appreciated for testing and further development, they also help me out.
 
 ### JOIN THE DISCORD FOR LIVE UPDATES, POLLS AND SUPPORT https://discord.gg/KweaD6G97f
 
