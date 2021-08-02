@@ -1,4 +1,14 @@
-# Smart Sniper
+<h1 align="center">
+Smart Sniper
+</h1>
+<p align="center">
+	<a href="https://github.com/snipesmarter/smart-sniper">
+	<img
+		alt="GitHub Stars"
+		src="https://img.shields.io/github/stars/snipesmarter/smart-sniper?color=%2370a1d2&label=Stars%20%E2%AD%90"></a>
+    <a href="https://discord.gg/2MeaJvrS2p"><img src="https://img.shields.io/discord/840342619329658921?color=%2370a1d2&label=Discord&logo=discord&logoColor=white"></a>
+ src="https://www.codefactor.io/repository/github/mcsniperpy/mcsniperpy/badge/main" alt="CodeFactor" /></a>
+</p>
 Created and maintained by Coolkidmacho#0001
 ## Donations are appreciated for testing and further development, they also help me out.
 
