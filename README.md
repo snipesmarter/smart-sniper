@@ -8,15 +8,16 @@ Smart Sniper
 		src="https://img.shields.io/github/stars/snipesmarter/smart-sniper?color=%2370a1d2&label=Stars%20%E2%AD%90"></a>
     <a href="https://discord.gg/2MeaJvrS2p"><img src="https://img.shields.io/discord/840342619329658921?color=%2370a1d2&label=Discord&logo=discord&logoColor=white"></a>
 </p>
-Created and maintained by Coolkidmacho#0001
-## Donations are appreciated for testing and further development, they also help me out.
+<span>Created and maintained by Coolkidmacho#0001</span>
 
-### JOIN THE DISCORD FOR LIVE UPDATES, POLLS AND SUPPORT https://discord.gg/KweaD6G97f
+<h5><b>Donations are appreciated for testing and further development, they also help me out.</b></h5>
 
 ## The most adaptive sniper in the industry 
 
 SmartSniper is a high tech adaptive sniper. This sniper's autosniping and automatic delay tuning assists in helping you obtain the best username possible!
 **Rewrite coming out soon!**
+
+### Join the Discord for live updates, polls, and support: https://discord.gg/KweaD6G97f
 
 ## Features
 
@@ -190,18 +191,14 @@ Smart Sniper utilizes public APIs and software made by me (@coolkidmacho) and ot
  - PyCraft
    - Used to help auto-claim NameMC profiles.
    - [https://github.com/ammaraskar/pyCraft](https://github.com/ammaraskar/pyCraft)
+
+# Useful Programs
+
+The programs listed here are helpful, but not required.
+
  - Dimension 4
    - Used to sync time with world time servers (NTP).
    - [http://www.thinkman.com/dimension4/download.htm](http://www.thinkman.com/dimension4/download.htm)
-
-<!-- 
-
-Suggested edits:
- - make Dimension 4 categorized as recommended for usage and not utilized.
-
--->
-
-
 
 # Development
 
@@ -232,29 +229,50 @@ Head to /LICENSE for full license information.
 
 # Credits
 
-Thanks to kqzz for like helping alot for this project.
-Thanks to [Kqzz]'s, [MCsniperPY] project for code snippets in mojang auth. Thanks to him for contributing to this project alot and helping me along.
-Thanks to Cypheriel#3837 for the original namemc claim script, i could not have done it without him!
-The microsoft authentication is from https://github.com/MohanadHosny/Microsoft-Minecraft-Auth, thank you very much to him for the msauth.py code!
+Thanks to [coolkidmacho] for:
+ - maintaining this repo
+ - lots of code
 
-<!-- 
-
-Suggested text:
-
-Thanks to @kqzz for:
+Thanks to [Kqzz] for:
  - helping a lot with this project
  - code snippets from [MCsniperPY](https://github.com/MCsniperPY) for Mojang authentication
+
 Thanks to [Cypheriel#3837 on Discord](https://github.com/Cypheriel) for:
  - NameMC automatic claim script
-Thanks to @MohanadHosny for:
+
+Thanks to [MohanadHosny] for:
  - Microsoft authentication code (specifically `msauth.py`).
-   - Found at https://github.com/MohanadHosny/Microsoft-Minecraft-Auth
+   - found at https://github.com/MohanadHosny/Microsoft-Minecraft-Auth
 
+Thanks to [chrommie] and [kenny] for:
+ - main.py updates
+   - prompt tidying
 
--->
+Thanks to [chrommie] and [peet] for:
+ - main.py updates
+   - type declarations
+
+Thanks to [surprise] for:
+  - updated bearer grabber script
+  - main.py tidying
+
+Thanks to [coolkidmacho], [overestimate], [TanujKS], and [Kqzz] for:
+ - this README and it's contents
+
+Thanks to issue submitters, issue commenters, stargazers, and anyone missed here for:
+ - making this project grow
+ - helping to find and fix bugs
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
+   [coolkidmacho]: <https://github.com/coolkidmacho>
    [Kqzz]: <https://github.com/Kqzz>
+   [MohanadHosny]: <https://github.com/MohanadHosny>
+   [chrommie]: <https://github.com/chrommie>
+   [peet]: <https://github.com/wwhtrbbtt>
+   [surprise]: <https://github.com/surprise>
+   [overestimate]: <https://github.com/overestimate>
+   [TanjuKS]: <https://github.com/TanujKS>
+   [kenny]: <https://github.com/cyberseckenny>
    [MCsniperPY]: <https://mcsniperpy.com/>
    [bearer-info]: <https://kqzz.github.io/mc-bearer-token/>
