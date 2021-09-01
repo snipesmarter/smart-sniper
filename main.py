@@ -241,7 +241,7 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
         snipe_time = droptime - (offset / 1000)
         print("current time in unix format is: ", time.time())
         print("Calculating...")
-        print(f"sniping {target} at {droptime} unix time")
+        print(f"{Fore.GREEN}sniping {target} at {droptime} unix time{Fore.RESET} sleeping. ")
         while time.time() < snipe_time:
             await asyncio.sleep(0.001)
         coroutines = [send_request(session, bearer_token, target) for _ in range(6)]
