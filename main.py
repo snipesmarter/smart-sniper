@@ -10,7 +10,7 @@ import aiohttp
 import requests
 from colorama import Fore, Style, init
 
-from msauth import login
+from msauth import PreAuthResponse, login
 
 init(convert=True, autoreset=True)
 
@@ -240,8 +240,13 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
         print(offset)
         snipe_time = droptime - (offset / 1000)
         print("current time in unix format is: ", time.time())
-        print("Calculating...")
-        print(f"{Fore.GREEN}sniping {target} at {droptime} unix time{Fore.RESET} sleeping. ")
+        print(f"{Fore.YELLOW}Calculating...")
+        print(
+            f"{Fore.GREEN}sniping {target} at {droptime} unix time{Fore.RESET} sleeping. "
+        )
+        print(
+            f"{Fore.CYAN}You have successfully queued a name!{Fore.BLUE} Please wait till the name drops!"
+        )
         while time.time() < snipe_time:
             await asyncio.sleep(0.001)
         coroutines = [send_request(session, bearer_token, target) for _ in range(6)]
@@ -252,24 +257,23 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
 
 async def autosniper(bearer: str) -> None:
     sel = inp(
-        f"For search based sniping select {Fore.GREEN}s{Fore.RESET}\nFor Auto 3char Enter {Fore.GREEN}3{Fore.RESET}"
+        f"For search based sniping select {Fore.GREEN}s{Fore.RESET}\nFor Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
     )
     if sel == "s":
         try:
             print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-            names = requests.get("http://api.coolkidmacho.com/search/{searches}"
-            ).json()
+            names = requests.get("http://api.coolkidmacho.com/search/{searches}").json()
         except:
             print(
-                f"{Fore.Red}Failed to get searched names, report this to a support channel.{Fore.RESET}"
+                f"{Fore.RED}Failed to get searched names, report this to a support channel.{Fore.RESET}"
             )
     if sel == "3":
         try:
             print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-            names = requests.get(f"").json()
+            names = requests.get(f"https://api.coolkidmacho.com/three").json()
         except:
             print(
-                f"{Fore.Red}Failed to get 3names names, report this to a support channel but dont ping anyone.{Fore.RESET}"
+                f"{Fore.RED}Failed to get 3names names, report this to a support channel but dont ping anyone.{Fore.RESET}"
             )
 
     delay = inp(f"Delay for snipe:  ")
@@ -278,18 +282,23 @@ async def autosniper(bearer: str) -> None:
     else:
         delay = tuned_delay
     print(tuned_delay, "tuned delay value")
-
     for nameseg in names:
-        name = nameseg["name"]
-        print(f"Sniping: {name}")
-        if tuned_delay is None:
-            print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
-            pass
+        tree = requests.get(f"https://api.ashcon.app/mojang/v2/user/{nameseg}")
+        print(tree.status_code)
+        if tree.status_code == 400:
+
+            name = nameseg["name"]
+            print(f"Sniping: {name}")
+            if tuned_delay is None:
+                print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
+                pass
+            else:
+                delay = tuned_delay
+                print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
+            print(f"{Fore.CYAN}delay is now ", delay + Fore.RESET)
+            await snipe(name, delay, bearer)
         else:
-            delay = tuned_delay
-            print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
-        print(f"{Fore.CYAN}delay is now ", delay + Fore.RESET)
-        await snipe(name, delay, bearer)
+            pass
 
 
 #   Mojang setup and snipe
@@ -407,7 +416,7 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
 
 async def automojangsniper(token: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-    names = requests.get("http://api.coolkidmacho.com/three").json()
+    names = requests.get("https://api.coolkidmacho.com/three").json()
     delay = inp(f"Delay for snipe:  ")
     print(tuned_delay, "tuned delay value")
     for nameseg in names:
