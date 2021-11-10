@@ -247,12 +247,19 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
         print(
             f"{Fore.CYAN}You have successfully queued a name!{Fore.BLUE} Please wait till the name drops!"
         )
-        while time.time() < snipe_time:
-            await asyncio.sleep(0.001)
-        coroutines = [send_request(session, bearer_token, target) for _ in range(6)]
-        await asyncio.gather(*coroutines)
-        store(droptime, offset)
-        changeskin(bearer_token)
+        while time.time() < snipe_time - 10:
+            pass
+        if requests.get("https://api.mojang.com/users/profiles/minecraft/"+target).status_code == 204:
+            while time.time() < snipe_time:
+                pass
+            coroutines = [send_request(session, bearer_token, target) for _ in range(6)]
+            await asyncio.gather(*coroutines)
+            store(droptime, offset)
+            changeskin(bearer_token)
+        else:
+            print(
+                f"{Fore.RED}{target} is no longer dropping. Skipping..."
+            )
 
 
 async def autosniper(bearer: str) -> None:
@@ -405,13 +412,20 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
         snipe_time = droptime - (offset / 1000)
         print(time.time())
         print(f"sniping {target} at {droptime}")
-        while time.time() < snipe_time:
-            await asyncio.sleep(0.001)
-        coroutines = [
-            send_mojang_request(session, bearer_token, target) for _ in range(2)
-        ]
-        await asyncio.gather(*coroutines)
-        store(droptime, offset)
+        while time.time() < snipe_time - 10:
+            pass
+        if requests.get("https://api.mojang.com/users/profiles/minecraft/"+target).status_code == 204:
+            while time.time() < snipe_time:
+                pass
+            coroutines = [
+                send_mojang_request(session, bearer_token, target) for _ in range(2)
+            ]
+            await asyncio.gather(*coroutines)
+            store(droptime, offset)
+        else:
+            print(
+                f"{Fore.RED}{target} is no longer dropping. Skipping..."
+            )
 
 
 async def automojangsniper(token: str) -> None:
