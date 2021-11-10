@@ -248,10 +248,10 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
             f"{Fore.CYAN}You have successfully queued a name!{Fore.BLUE} Please wait till the name drops!"
         )
         while time.time() < snipe_time - 10:
-            pass
+            await asyncio.sleep(0.001)
         if requests.get("https://api.mojang.com/users/profiles/minecraft/"+target).status_code == 204:
             while time.time() < snipe_time:
-                pass
+                await asyncio.sleep(0.001)
             coroutines = [send_request(session, bearer_token, target) for _ in range(6)]
             await asyncio.gather(*coroutines)
             store(droptime, offset)
@@ -413,10 +413,10 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
         print(time.time())
         print(f"sniping {target} at {droptime}")
         while time.time() < snipe_time - 10:
-            pass
+            await asyncio.sleep(0.001)
         if requests.get("https://api.mojang.com/users/profiles/minecraft/"+target).status_code == 204:
             while time.time() < snipe_time:
-                pass
+                await asyncio.sleep(0.001)
             coroutines = [
                 send_mojang_request(session, bearer_token, target) for _ in range(2)
             ]
