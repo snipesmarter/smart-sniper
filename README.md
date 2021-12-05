@@ -12,10 +12,10 @@ Smart Sniper
 
 <h5><b>Donations are appreciated for testing and further development, they also help me out.</b></h5>
 
-## The most adaptive sniper in the industry 
+## The most adaptive minecraft username sniper in the industry 
 
 SmartSniper is a high tech adaptive sniper. This sniper's autosniping and automatic delay tuning assists in helping you obtain the best username possible!
-**Rewrite coming out soon!**
+
 
 ### Join the Discord for live updates, polls, and support: https://discord.gg/KweaD6G97f
 
@@ -37,7 +37,7 @@ SmartSniper is a high tech adaptive sniper. This sniper's autosniping and automa
 > to be as interactive and hands free as possible.
 
 We hope to make the sniping experience so automated that once you let it run, it will snipe a name without any interaction.
-#### WARNING: This is not stable yet. There will be bugs that need to be fixed. We are not liable for any missed names.
+
 
 # Table of Contents
 
@@ -262,8 +262,6 @@ Thanks to [coolkidmacho], [overestimate], [TanujKS], and [Kqzz] for:
 Thanks to issue submitters, issue commenters, stargazers, and anyone missed here for:
  - making this project grow
  - helping to find and fix bugs
-
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
    [coolkidmacho]: <https://github.com/coolkidmacho>
    [Kqzz]: <https://github.com/Kqzz>
