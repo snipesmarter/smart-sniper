@@ -249,7 +249,12 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
         )
         while time.time() < snipe_time - 10:
             await asyncio.sleep(0.001)
-        if requests.get("https://api.mojang.com/users/profiles/minecraft/"+target).status_code == 204:
+        if (
+            requests.get(
+                "https://api.mojang.com/users/profiles/minecraft/" + target
+            ).status_code
+            == 204
+        ):
             while time.time() < snipe_time:
                 await asyncio.sleep(0.001)
             coroutines = [send_request(session, bearer_token, target) for _ in range(6)]
@@ -257,9 +262,7 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
             store(droptime, offset)
             changeskin(bearer_token)
         else:
-            print(
-                f"{Fore.RED}{target} is no longer dropping. Skipping..."
-            )
+            print(f"{Fore.RED}{target} is no longer dropping. Skipping...")
 
 
 async def autosniper(bearer: str) -> None:
@@ -269,8 +272,14 @@ async def autosniper(bearer: str) -> None:
     if sel == "s":
         try:
             print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-            names = requests.get("http://api.coolkidmacho.com/search/{searches}").json()
-        except:
+            searches = inp(
+                "How many searches do you want ( 50, 100, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000 )?: "
+            )
+            names = requests.get(f"http://api.coolkidmacho.com/up/{searches}").json()[
+                "names"
+            ]
+        except Exception as e:
+            print(e)
             print(
                 f"{Fore.RED}Failed to get searched names, report this to a support channel.{Fore.RESET}"
             )
@@ -292,9 +301,9 @@ async def autosniper(bearer: str) -> None:
     for nameseg in names:
         tree = requests.get(f"https://api.ashcon.app/mojang/v2/user/{nameseg}")
         print(tree.status_code)
-        if tree.status_code == 400:
+        if tree.status_code == 404 or tree.status_code == 400:
 
-            name = nameseg["name"]
+            name = nameseg
             print(f"Sniping: {name}")
             if tuned_delay is None:
                 print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
@@ -414,7 +423,12 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
         print(f"sniping {target} at {droptime}")
         while time.time() < snipe_time - 10:
             await asyncio.sleep(0.001)
-        if requests.get("https://api.mojang.com/users/profiles/minecraft/"+target).status_code == 204:
+        if (
+            requests.get(
+                "https://api.mojang.com/users/profiles/minecraft/" + target
+            ).status_code
+            == 204
+        ):
             while time.time() < snipe_time:
                 await asyncio.sleep(0.001)
             coroutines = [
@@ -423,9 +437,7 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
             await asyncio.gather(*coroutines)
             store(droptime, offset)
         else:
-            print(
-                f"{Fore.RED}{target} is no longer dropping. Skipping..."
-            )
+            print(f"{Fore.RED}{target} is no longer dropping. Skipping...")
 
 
 async def automojangsniper(token: str) -> None:
