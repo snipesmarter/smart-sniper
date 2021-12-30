@@ -274,3 +274,6 @@ Thanks to issue submitters, issue commenters, stargazers, and anyone missed here
    [kenny]: <https://github.com/cyberseckenny>
    [MCsniperPY]: <https://mcsniperpy.com/>
    [bearer-info]: <https://kqzz.github.io/mc-bearer-token/>
+
+Keywords
+Minecraft Api, Minecraft Username, Python, Requests, Smart Sniper
