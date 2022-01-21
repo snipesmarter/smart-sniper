@@ -257,7 +257,7 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
         ):
             while time.time() < snipe_time:
                 await asyncio.sleep(0.001)
-            coroutines = [send_request(session, bearer_token, target) for _ in range(6)]
+            coroutines = [send_request(session, bearer_token, target) for _ in range(2)]
             await asyncio.gather(*coroutines)
             store(droptime, offset)
             changeskin(bearer_token)
