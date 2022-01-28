@@ -248,9 +248,13 @@ Thanks to [chrommie] and [kenny] for:
  - main.py updates
    - prompt tidying
 
-Thanks to [chrommie] and [peet] for:
+Thanks to [chrommie] for:
  - main.py updates
    - type declarations
+  
+Thanks to [peet] for:
+  - NameMc scraping script
+  - main.py tidying
 
 Thanks to [surprise] for:
   - updated bearer grabber script
