@@ -3,3 +3,4 @@ requests
 colorama
 typing
 h2
+dateutil
