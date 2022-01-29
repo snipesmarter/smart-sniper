@@ -5,7 +5,7 @@ import os
 import time
 import urllib.request
 from datetime import datetime, timezone
-import scraper
+
 import aiohttp
 import requests
 from colorama import Fore, Style, init
@@ -209,9 +209,28 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
-    c = scraper.getNameInfo(username)["droptime"]
-    print(c)
-    return c
+    async with session.get(f"http://api.coolkidmacho.com/droptime/{username}") as r:
+        try:
+            r_json = await r.json()
+            print(r_json)
+            droptime = int(float(r_json["UNIX"]))
+            return droptime
+        except:
+            try:
+                prevOwner = inp(
+                    f"What is the current username of the account that owned {username} before this?:   "
+                )
+                r = requests.post(
+                    "https://mojang-api.teun.lol/upload-droptime",
+                    json={"name": username, "prevOwner": prevOwner},
+                )
+                print(r.text)
+                droptime = r.json()["UNIX"]
+                return droptime
+            except:
+                print(
+                    f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}"
+                )
 
 
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
@@ -238,7 +257,7 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
         ):
             while time.time() < snipe_time:
                 await asyncio.sleep(0.001)
-            coroutines = [send_request(session, bearer_token, target) for _ in range(2)]
+            coroutines = [send_request(session, bearer_token, target) for _ in range(6)]
             await asyncio.gather(*coroutines)
             store(droptime, offset)
             changeskin(bearer_token)
@@ -251,10 +270,27 @@ async def autosniper(bearer: str) -> None:
         f"For search based sniping select {Fore.GREEN}s{Fore.RESET}\nFor Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
     )
     if sel == "s":
-        s = inp("Enter search amount: ")
-        names = scraper.getNameHistory(searches=s)
+        try:
+            print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
+            searches = inp(
+                "How many searches do you want ( 50, 100, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000 )?: "
+            )
+            names = requests.get(f"http://api.coolkidmacho.com/up/{searches}").json()[
+                "names"
+            ]
+        except Exception as e:
+            print(e)
+            print(
+                f"{Fore.RED}Failed to get searched names, report this to a support channel.{Fore.RESET}"
+            )
     if sel == "3":
-        names = scraper.getNameHistory(length=3)
+        try:
+            print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
+            names = requests.get(f"https://api.coolkidmacho.com/three").json()
+        except:
+            print(
+                f"{Fore.RED}Failed to get 3names names, report this to a support channel but dont ping anyone.{Fore.RESET}"
+            )
 
     delay = inp(f"Delay for snipe:  ")
     if tuned_delay == None:
