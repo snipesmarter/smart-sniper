@@ -2,9 +2,10 @@ import argparse
 import asyncio
 import json
 import os
-import platform
 import time
 import urllib.request
+import subprocess
+import re
 from datetime import datetime, timezone
 
 import aiohttp
@@ -13,10 +14,10 @@ from colorama import Fore, Style, init
 
 from msauth import PreAuthResponse, login
 
-if platform.system() == "Darwin":
-    init(convert=False, autoreset=True)
-else:
+if os.name == "nt":
     init(convert=True, autoreset=True)
+else:
+    init(convert=False, autoreset=True)
 
 cl = False
 if cl:
