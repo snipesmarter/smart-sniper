@@ -237,7 +237,7 @@ Thanks to [Kqzz] for:
  - helping a lot with this project
  - code snippets from [MCsniperPY](https://github.com/MCsniperPY) for Mojang authentication
 
-Thanks to [Cypheriel#3837 on Discord](https://github.com/Cypheriel) for:
+Thanks to [Cypheriel](https://github.com/Cypheriel) for:
  - NameMC automatic claim script
 
 Thanks to [MohanadHosny] for:
