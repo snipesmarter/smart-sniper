@@ -12,7 +12,10 @@ from colorama import Fore, Style, init
 
 from msauth import PreAuthResponse, login
 
-init(convert=True, autoreset=True)
+if os.name == "nt":
+    init(convert=True, autoreset=True)
+else:
+    init(convert=False, autoreset=True)
 
 cl = False
 if cl:
@@ -447,14 +450,16 @@ async def automojangsniper(token: str) -> None:
     print(tuned_delay, "tuned delay value")
     for nameseg in names:
         name = nameseg["name"]
-        if tuned_delay is None:
-            print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
-            pass
-        else:
-            delay = tuned_delay
-            print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
-        print("delay is now ", delay)
-        await mojang_snipe(name, delay, token)
+        namecheck = requests.get(f"https://api.ashcon.app/mojang/v2/user/{name}")
+        if namecheck.status_code == 404:
+            if tuned_delay is None:
+                print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
+                pass
+            else:
+                delay = tuned_delay
+                print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
+            print("delay is now ", delay)
+            await mojang_snipe(name, delay, token)
 
 
 async def gather_mojang_info() -> None:
