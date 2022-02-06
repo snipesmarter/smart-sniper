@@ -4,8 +4,6 @@ import json
 import os
 import time
 import urllib.request
-import subprocess
-import re
 from datetime import datetime, timezone
 
 import aiohttp
