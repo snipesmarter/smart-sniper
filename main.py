@@ -4,6 +4,7 @@ import json
 import os
 import time
 import urllib.request
+import pwinput
 from datetime import datetime, timezone
 
 import aiohttp
@@ -464,7 +465,7 @@ async def automojangsniper(token: str) -> None:
 
 async def gather_mojang_info() -> None:
     email = inp(f"Account Email:  ")
-    password = inp(f"Password:  ")
+    password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
     print(password)
     token = await get_mojang_token(email, password)
     style = inp(
@@ -521,7 +522,7 @@ async def start() -> None:
         if autype.lower() == "e":
             try:
                 email = inp(f"what is your microsoft email:  ")
-                password = inp("password:  ")
+                password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
                 resp = login(email, password)
                 token = resp["access_token"]
             except:
@@ -557,7 +558,7 @@ async def start() -> None:
         if autype.lower() == "e":
             try:
                 email = inp(f"what is your microsoft email:  ")
-                password = inp("password:  ")
+                password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
                 resp = login(email, password)
                 token = resp["access_token"]
             except:
