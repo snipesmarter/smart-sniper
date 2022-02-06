@@ -271,7 +271,7 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
 
 async def autosniper(bearer: str) -> None:
     sel = inp(
-        f"For search based sniping select {Fore.GREEN}s{Fore.RESET}\nFor Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
+        f"{Fore.YELLOW}For search based sniping select {Fore.GREEN}s{Fore.RESET}\n{Fore.YELLOW}For Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
     )
     if sel == "s":
         try:
@@ -466,11 +466,10 @@ async def automojangsniper(token: str) -> None:
 async def gather_mojang_info() -> None:
     email = inp(f"Account Email:  ")
     password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
-    print(password)
     token = await get_mojang_token(email, password)
     style = inp(
-        "What sniper mode? Enter `a` for autosniper"
-        " and `n` for single name sniping:  "
+        f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
+        f"{Fore.YELLOW}and {Fore.GREEN}n{Fore.YELLOW} for single name sniping: {Fore.RESET}"
     )
     if style == "a":
         await automojangsniper(token)
@@ -533,8 +532,8 @@ async def start() -> None:
         else:
             print(f"{Fore.RED}You did not select a valid option.")
         style = inp(
-            "What sniper mode? Enter `a` for autosniper"
-            " and `n` for single name sniping:  "
+            f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
+            f"{Fore.YELLOW} and {Fore.GREEN}n{Fore.YELLOW} for single name sniping: {Fore.RESET}"
         )
         if style == "a":
             await automojangsniper(token)
@@ -572,8 +571,8 @@ async def start() -> None:
             exit()
 
         style = inp(
-            f"What sniper mode? Enter `a` for autosniper and"
-            f" `n` for single name sniping:  "
+            f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
+            f"{Fore.YELLOW}and {Fore.GREEN}n{Fore.YELLOW} for single name sniping: {Fore.RESET}"
         )
         if style == "a":
             await autosniper(token)
