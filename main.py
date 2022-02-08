@@ -237,6 +237,18 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
                 )
 
 
+def get_next_names(amount: int) -> None:
+    names = requests.get("https://api.coolkidmacho.com/three").json()
+    namecount = 0
+    for nameseg in names:
+        if namecount <= amount:
+            name = nameseg["name"]
+            droptime = int(float(nameseg["droptime"]))
+            droptime = datetime.fromtimestamp(droptime)
+            print(f"{Fore.LIGHTGREEN_EX}{name}{Fore.LIGHTCYAN_EX} at {droptime}")
+            namecount = namecount + 1
+
+
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
         droptime = await get_droptime(target, session)  # find the droptime!
@@ -468,12 +480,15 @@ async def gather_mojang_info() -> None:
     password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
     token = await get_mojang_token(email, password)
     style = inp(
-        f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
-        f"{Fore.YELLOW}and {Fore.GREEN}n{Fore.YELLOW} for single name sniping: {Fore.RESET}"
-    )
+            f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
+            f"{Fore.YELLOW}and {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}"
+            f"{Fore.YELLOW}and {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
+        )
     if style == "a":
         await automojangsniper(token)
-    elif style == "n":
+    elif style == "n" or "s":
+        if style == "s":
+            get_next_names(10)
         name = inp(f"Name to snipe:  ")
         delay = inp(f"Delay for snipe:  ")
         tuned_delay = delay
@@ -533,12 +548,15 @@ async def start() -> None:
             print(f"{Fore.RED}You did not select a valid option.")
         style = inp(
             f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
-            f"{Fore.YELLOW} and {Fore.GREEN}n{Fore.YELLOW} for single name sniping: {Fore.RESET}"
+            f"{Fore.YELLOW}and {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}"
+            f"{Fore.YELLOW}and {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
         )
         if style == "a":
             await automojangsniper(token)
             return
-        elif style == "n":
+        elif style == "n" or style == "s":
+            if style == "s":
+                get_next_names(10)
             name = inp(f"Name to snipe:  ")
             global delay
             delay = inp(f"Delay for snipe:  ")
@@ -572,11 +590,14 @@ async def start() -> None:
 
         style = inp(
             f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
-            f"{Fore.YELLOW}and {Fore.GREEN}n{Fore.YELLOW} for single name sniping: {Fore.RESET}"
+            f"{Fore.YELLOW}and {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}"
+            f"{Fore.YELLOW}and {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
         )
         if style == "a":
             await autosniper(token)
-        elif style == "n":
+        elif style == "n" or style == "s":
+            if style == "s":
+                get_next_names(10)
             name = inp(f"Name to snipe:  ")
             delay = inp(f"Delay for snipe:  ")
             tuned_delay = delay
