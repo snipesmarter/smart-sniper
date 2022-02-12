@@ -1,0 +1,10 @@
+--Microsoft/GC--
+Email: 
+Password: 
+
+--Mojang--
+Email: 
+Password: 
+
+--Manual--
+Bearer: 
