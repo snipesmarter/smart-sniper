@@ -237,7 +237,7 @@ Thanks to [Kqzz] for:
  - helping a lot with this project
  - code snippets from [MCsniperPY](https://github.com/MCsniperPY) for Mojang authentication
 
-Thanks to [Cypheriel#3837 on Discord](https://github.com/Cypheriel) for:
+Thanks to [Cypheriel](https://github.com/Cypheriel) for:
  - NameMC automatic claim script
 
 Thanks to [MohanadHosny] for:
@@ -263,6 +263,11 @@ Thanks to [surprise] for:
 Thanks to [coolkidmacho], [overestimate], [TanujKS], and [Kqzz] for:
  - this README and it's contents
 
+Thanks to [MatrixCodeDE] for:
+ - main.py updates
+   - cross platform optimisation
+   - Name Checking for auto 3 char. 
+
 Thanks to issue submitters, issue commenters, stargazers, and anyone missed here for:
  - making this project grow
  - helping to find and fix bugs
@@ -278,6 +283,7 @@ Thanks to issue submitters, issue commenters, stargazers, and anyone missed here
    [kenny]: <https://github.com/cyberseckenny>
    [MCsniperPY]: <https://mcsniperpy.com/>
    [bearer-info]: <https://kqzz.github.io/mc-bearer-token/>
+   [MatrixCodeDE]: <https://github.com/MatrixCodeDE>
 
 Keywords
 Minecraft Api, Minecraft Username, Python, Requests, Smart Sniper
