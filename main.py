@@ -286,7 +286,10 @@ async def get_profile_information(bearer: str, attr: str) -> str:
                 print(f"{Fore.RED}Failed to login!")
 
 def get_next_names(amount: int) -> None:
-    names = requests.get("https://api.coolkidmacho.com/three").json()
+    try:
+        names = requests.get("https://api.coolkidmacho.com/three").json()
+    except:
+        print(f"{Fore.LIGHTRED_EX}API is down...")
     namecount = 0
     for nameseg in names:
         if namecount <= amount:
@@ -340,9 +343,13 @@ async def autosniper(bearer: str) -> None:
             searches = inp(
                 "How many searches do you want ( 50, 100, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000 )?: "
             )
-            names = requests.get(f"http://api.coolkidmacho.com/up/{searches}").json()[
+            try:
+                names = requests.get(f"http://api.coolkidmacho.com/up/{searches}").json()[
                 "names"
             ]
+            except:
+                print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
+                exit()
         except Exception as e:
             print(e)
             print(
@@ -508,7 +515,11 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
 
 async def automojangsniper(token: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-    names = requests.get("https://api.coolkidmacho.com/three").json()
+    try:
+        names = requests.get("https://api.coolkidmacho.com/three").json()
+    except:
+        print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
+        exit()
     delay = inp(f"Delay for snipe:  ")
     print(tuned_delay, "tuned delay value")
     for nameseg in names:
@@ -593,25 +604,35 @@ async def start() -> None:
                     password = ms_pw
                 resp = login(email, password)
                 token = resp["access_token"]
-                login_name = await get_profile_information(token, "name")
-                print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                try:
+                    login_name = await get_profile_information(token, "name")
+                    print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                except:
+                    print(f"{Fore.GREEN}No previous name")
             except:
                 print(f"{Fore.RED}Failed MsAuth for you, use token.")
                 if manual_bearer == "":
                     token = inp(f"What is your bearer token:  ")
                 else:
                     token = manual_bearer
-                login_name = await get_profile_information(token, "name")
-                print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                try:
+                    login_name = await get_profile_information(token, "name")
+                    print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                except:
+                    print(f"{Fore.GREEN}No previous name")
         elif autype.lower() == "t":
             if manual_bearer == "":
                 token = inp(f"What is your bearer token:  ")
             else:
                 token = manual_bearer
-            login_name = await get_profile_information(token, "name")
-            print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+            try:
+                login_name = await get_profile_information(token, "name")
+                print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+            except:
+                print(f"{Fore.GREEN}No previous name")
         else:
             print(f"{Fore.RED}You did not select a valid option.")
+            exit()
         style = inp(
             f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
             f"{Fore.YELLOW} and {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}"
