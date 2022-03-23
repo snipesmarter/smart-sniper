@@ -153,7 +153,7 @@ def changeskin(bearer):
 
 def store(droptime: int, offset: int) -> None:  # Dodgy timing script!
     print(offset, ": Delay Used")
-    stamp = end[0]
+    stamp = end[len(end)-1]
     datetime_time = datetime.fromtimestamp(droptime)
     finaldel = str(stamp - datetime_time).split(":")[2].split(".")
 
@@ -218,9 +218,10 @@ def custom(email, password):
             changeskin(token)
         except:
             print(f"{Fore.RED}Failed to send change skin!")
-
+        print("{Fore.GREEN}Congrats!\n{Fore.LIGHTGREEN_EX}You successfully sniped {Fore.GREEN}{name}{Fore.LIGHTGREEN_EX} at {Fore.GREEN}{snipedtime}{Fore.LIGHTGREEN_EX}!")
         if namemc == "True":
             autonamemc(email, password)
+        exit()
 
 
 async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None:
@@ -244,28 +245,31 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
-    async with session.get(f"http://api.coolkidmacho.com/droptime/{username}") as r:
+    try:
+        r = await requests.get(f"http://api.coolkidmacho.com/droptime/{username}").json()
+        droptime = int(float(r["UNIX"]))
+        return droptime
+    except:
         try:
-            r_json = await r.json()
-            print(r_json)
-            droptime = int(float(r_json["UNIX"]))
+            res = await requests.get(f"http://api.star.shopping/droptime/{username}", headers={"User-Agent": "Sniper"}).json()
+            droptime = int(float(res["unix"]))
             return droptime
         except:
             try:
-                prevOwner = inp(
-                    f"What is the current username of the account that owned {username} before this?:   "
-                )
-                r = requests.post(
-                    "https://mojang-api.teun.lol/upload-droptime",
-                    json={"name": username, "prevOwner": prevOwner},
-                )
-                print(r.text)
-                droptime = r.json()["UNIX"]
+                res = await requests.get(f'http://api.droptime.cc/droptime/{username}')
+                droptime = int(float(res["unix"]))
                 return droptime
             except:
-                print(
-                    f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}"
-                )
+                try:
+                    prevOwner = inp(
+                        f"What is the current username of the account that owned {username} before this?:   "
+                    )
+                    res = requests.post("https://mojang-api.teun.lol/upload-droptime",json={"name": username, "prevOwner": prevOwner}).json()
+                    droptime = res["UNIX"]
+                    return droptime
+                except:
+                    print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
+                    exit()
 
 
 async def get_profile_information(bearer: str, attr: str) -> str:
@@ -321,6 +325,7 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
             await asyncio.gather(*coroutines)
             store(droptime, offset)
             changeskin(bearer_token)
+            custom(email, password)
         else:
             print(f"{Fore.RED}{target} is no longer dropping. Skipping...")
 
