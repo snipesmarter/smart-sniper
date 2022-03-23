@@ -4,6 +4,7 @@ import json
 import os
 import time
 import urllib.request
+import pwinput
 from datetime import datetime, timezone
 
 import aiohttp
@@ -49,6 +50,37 @@ global mcsauth
 mcsauth = ""
 global webhook
 autoskin = True
+account = []
+global ms_email
+ms_email = ""
+global ms_pw
+ms_pw = ""
+global m_email
+m_email = ""
+global m_pw
+m_pw = ""
+global manual_bearer
+manual_bearer = ""
+
+
+raw_account = open("account.txt", "r")
+account = raw_account.readlines()
+raw_account.close()
+
+line = 0
+for x in account:
+    account[line] = account[line].replace("\n","")
+    account[line] = account[line].replace("Email:","")
+    account[line] = account[line].replace("Password:","")
+    account[line] = account[line].replace("Bearer:","")
+    account[line] = account[line].replace(" ","")
+    line = line + 1
+
+ms_email = account[1]
+ms_pw = account[2]
+m_email = account[5]
+m_pw = account[6]
+manual_bearer = account[9]
 
 
 def inp(text):
@@ -236,6 +268,31 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
                 )
 
 
+async def get_profile_information(bearer: str, attr: str) -> str:
+    async with aiohttp.ClientSession() as s:
+        headers = {"Content-type": "application/json", "Authorization": "Bearer " + bearer}
+        async with s.get(
+            f"https://api.minecraftservices.com/minecraft/profile",
+            headers=headers,
+        ) as r:
+            try:
+                p_infos = await r.json()
+                return p_infos[attr]
+            except:
+                print(f"{Fore.RED}Failed to login!")
+
+def get_next_names(amount: int) -> None:
+    names = requests.get("https://api.coolkidmacho.com/three").json()
+    namecount = 0
+    for nameseg in names:
+        if namecount <= amount:
+            name = nameseg["name"]
+            droptime = int(float(nameseg["droptime"]))
+            droptime = datetime.fromtimestamp(droptime)
+            print(f"{Fore.LIGHTGREEN_EX}{name}{Fore.LIGHTCYAN_EX} at {droptime}")
+            namecount = namecount + 1
+
+
 async def snipe(target: str, offset: int, bearer_token: str) -> None:
     async with aiohttp.ClientSession() as session:
         droptime = await get_droptime(target, session)  # find the droptime!
@@ -270,7 +327,7 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
 
 async def autosniper(bearer: str) -> None:
     sel = inp(
-        f"For search based sniping select {Fore.GREEN}s{Fore.RESET}\nFor Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
+        f"{Fore.YELLOW}For search based sniping select {Fore.GREEN}s{Fore.RESET}\n{Fore.YELLOW}For Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
     )
     if sel == "s":
         try:
@@ -423,7 +480,8 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
         print(offset)
         snipe_time = droptime - (offset / 1000)
         print(time.time())
-        print(f"sniping {target} at {droptime}")
+        conv_droptime = datetime.fromtimestamp(droptime).strftime('%H:%M:%S on %Y-%m-%d')
+        print(f"sniping {target} at {conv_droptime}")
         while time.time() < snipe_time - 10:
             await asyncio.sleep(0.001)
         if (
@@ -464,16 +522,18 @@ async def automojangsniper(token: str) -> None:
 
 async def gather_mojang_info() -> None:
     email = inp(f"Account Email:  ")
-    password = inp(f"Password:  ")
-    print(password)
+    password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
     token = await get_mojang_token(email, password)
     style = inp(
-        "What sniper mode? Enter `a` for autosniper"
-        " and `n` for single name sniping:  "
-    )
+            f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
+            f"{Fore.YELLOW}and {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}"
+            f"{Fore.YELLOW}and {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
+        )
     if style == "a":
         await automojangsniper(token)
-    elif style == "n":
+    elif style == "n" or "s":
+        if style == "s":
+            get_next_names(10)
         name = inp(f"Name to snipe:  ")
         delay = inp(f"Delay for snipe:  ")
         tuned_delay = delay
@@ -520,25 +580,44 @@ async def start() -> None:
         )
         if autype.lower() == "e":
             try:
-                email = inp(f"what is your microsoft email:  ")
-                password = inp("password:  ")
+                if ms_email == "" or ms_pw == "":
+                    email = inp(f"what is your microsoft email:  ")
+                    password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
+                else:
+                    email = ms_email
+                    password = ms_pw
                 resp = login(email, password)
                 token = resp["access_token"]
+                login_name = await get_profile_information(token, "name")
+                print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
             except:
                 print(f"{Fore.RED}Failed MsAuth for you, use token.")
-                token = inp(f"What is your bearer token:  ")
+                if manual_bearer == "":
+                    token = inp(f"What is your bearer token:  ")
+                else:
+                    token = manual_bearer
+                login_name = await get_profile_information(token, "name")
+                print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
         elif autype.lower() == "t":
-            token = inp(f"What is your bearer token:  ")
+            if manual_bearer == "":
+                token = inp(f"What is your bearer token:  ")
+            else:
+                token = manual_bearer
+            login_name = await get_profile_information(token, "name")
+            print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
         else:
             print(f"{Fore.RED}You did not select a valid option.")
         style = inp(
-            "What sniper mode? Enter `a` for autosniper"
-            " and `n` for single name sniping:  "
+            f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
+            f"{Fore.YELLOW} and {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}"
+            f"{Fore.YELLOW} and {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
         )
         if style == "a":
             await automojangsniper(token)
             return
-        elif style == "n":
+        elif style == "n" or style == "s":
+            if style == "s":
+                get_next_names(10)
             name = inp(f"Name to snipe:  ")
             global delay
             delay = inp(f"Delay for snipe:  ")
@@ -556,27 +635,40 @@ async def start() -> None:
         )
         if autype.lower() == "e":
             try:
-                email = inp(f"what is your microsoft email:  ")
-                password = inp("password:  ")
+                if ms_email == "" or ms_pw == "":
+                    email = inp(f"what is your microsoft email:  ")
+                    password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
+                else: 
+                    email = ms_email
+                    password = ms_pw
                 resp = login(email, password)
                 token = resp["access_token"]
             except:
                 print(f"{Fore.RED}Failed MsAuth for you, use token.")
-                token = inp(f"What is your bearer token:  ")
+                if manual_bearer == "":
+                    token = inp(f"What is your bearer token:  ")
+                else:
+                    token = manual_bearer
 
         elif autype.lower() == "t":
-            token = inp(f"What is your bearer token:  ")
+            if manual_bearer == "":
+                token = inp(f"What is your bearer token:  ")
+            else: 
+                token = manual_bearer
         else:
             print(f"{Fore.RED}You did not select a valid option.")
             exit()
 
         style = inp(
-            f"What sniper mode? Enter `a` for autosniper and"
-            f" `n` for single name sniping:  "
+            f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
+            f"{Fore.YELLOW} and {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}"
+            f"{Fore.YELLOW} and {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
         )
         if style == "a":
             await autosniper(token)
-        elif style == "n":
+        elif style == "n" or style == "s":
+            if style == "s":
+                get_next_names(10)
             name = inp(f"Name to snipe:  ")
             delay = inp(f"Delay for snipe:  ")
             tuned_delay = delay
@@ -599,7 +691,7 @@ parser.add_argument("-e", "--Email", help="Email")
 parser.add_argument("-p", "--Password", help="Password")
 
 args = parser.parse_args()
-print(vars(args))
+#print(vars(args))
 boot = vars(args)
 if boot["Type"] != None:
     mainset = boot["Type"].replace(" ", "")
