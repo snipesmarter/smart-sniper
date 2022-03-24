@@ -3,13 +3,12 @@ import socket
 import ssl
 import certifi
 
-import h2.connection
-import h2.events
+import h2
 
 # Scraping module
 from bs4 import BeautifulSoup
-from datetime import datetime
-import dateutil.parser
+import datetime
+import dateutil
 
 DEBUG = False
 SERVER_NAME = "namemc.com"

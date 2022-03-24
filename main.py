@@ -153,7 +153,7 @@ def changeskin(bearer):
 
 def store(droptime: int, offset: int) -> None:  # Dodgy timing script!
     print(offset, ": Delay Used")
-    stamp = end[0]
+    stamp = end[len(end)-1]
     datetime_time = datetime.fromtimestamp(droptime)
     finaldel = str(stamp - datetime_time).split(":")[2].split(".")
 
@@ -218,9 +218,10 @@ def custom(email, password):
             changeskin(token)
         except:
             print(f"{Fore.RED}Failed to send change skin!")
-
+        print("{Fore.GREEN}Congrats!\n{Fore.LIGHTGREEN_EX}You successfully sniped {Fore.GREEN}{name}{Fore.LIGHTGREEN_EX} at {Fore.GREEN}{snipedtime}{Fore.LIGHTGREEN_EX}!")
         if namemc == "True":
             autonamemc(email, password)
+        exit()
 
 
 async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None:
@@ -247,25 +248,31 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     async with session.get(f"http://api.coolkidmacho.com/droptime/{username}") as r:
         try:
             r_json = await r.json()
-            print(r_json)
             droptime = int(float(r_json["UNIX"]))
             return droptime
         except:
-            try:
-                prevOwner = inp(
-                    f"What is the current username of the account that owned {username} before this?:   "
-                )
-                r = requests.post(
-                    "https://mojang-api.teun.lol/upload-droptime",
-                    json={"name": username, "prevOwner": prevOwner},
-                )
-                print(r.text)
-                droptime = r.json()["UNIX"]
-                return droptime
-            except:
-                print(
-                    f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}"
-                )
+            async with session.get(f"http://api.star.shopping/droptime/{username}", headers={"User-Agent": "Sniper"}) as r2:
+                try:
+                    r_json = await r2.json()
+                    droptime = int(float(r_json["unix"]))
+                    return droptime
+                except:
+                    async with session.get(f'http://api.droptime.cc/droptime/{username}') as r3:
+                        try:
+                            r_json = await r3.json()
+                            droptime = int(float(r_json["unix"]))
+                            return droptime
+                        except:
+                            try:
+                                prevOwner = inp(
+                                    f"What is the current username of the account that owned {username} before this?:   "
+                                )
+                                res = requests.post("https://mojang-api.teun.lol/upload-droptime",json={"name": username, "prevOwner": prevOwner}).json()
+                                droptime = res["UNIX"]
+                                return droptime
+                            except:
+                                print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
+                                exit()
 
 
 async def get_profile_information(bearer: str, attr: str) -> str:
@@ -282,7 +289,11 @@ async def get_profile_information(bearer: str, attr: str) -> str:
                 print(f"{Fore.RED}Failed to login!")
 
 def get_next_names(amount: int) -> None:
-    names = requests.get("https://api.coolkidmacho.com/three").json()
+    try:
+        names = requests.get("https://api.coolkidmacho.com/three").json()
+    except:
+        print(f"{Fore.LIGHTRED_EX}API is down...")
+        return
     namecount = 0
     for nameseg in names:
         if namecount <= amount:
@@ -321,6 +332,7 @@ async def snipe(target: str, offset: int, bearer_token: str) -> None:
             await asyncio.gather(*coroutines)
             store(droptime, offset)
             changeskin(bearer_token)
+            custom(email, password)
         else:
             print(f"{Fore.RED}{target} is no longer dropping. Skipping...")
 
@@ -335,9 +347,13 @@ async def autosniper(bearer: str) -> None:
             searches = inp(
                 "How many searches do you want ( 50, 100, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000 )?: "
             )
-            names = requests.get(f"http://api.coolkidmacho.com/up/{searches}").json()[
+            try:
+                names = requests.get(f"http://api.coolkidmacho.com/up/{searches}").json()[
                 "names"
             ]
+            except:
+                print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
+                exit()
         except Exception as e:
             print(e)
             print(
@@ -503,7 +519,11 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str) -> None:
 
 async def automojangsniper(token: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-    names = requests.get("https://api.coolkidmacho.com/three").json()
+    try:
+        names = requests.get("https://api.coolkidmacho.com/three").json()
+    except:
+        print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
+        exit()
     delay = inp(f"Delay for snipe:  ")
     print(tuned_delay, "tuned delay value")
     for nameseg in names:
@@ -581,32 +601,42 @@ async def start() -> None:
         if autype.lower() == "e":
             try:
                 if ms_email == "" or ms_pw == "":
-                    email = inp(f"what is your microsoft email:  ")
+                    email = inp(f"what is your microsoft email: ")
                     password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
                 else:
                     email = ms_email
                     password = ms_pw
                 resp = login(email, password)
                 token = resp["access_token"]
-                login_name = await get_profile_information(token, "name")
-                print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                try:
+                    login_name = await get_profile_information(token, "name")
+                    print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                except:
+                    print(f"{Fore.GREEN}No previous name")
             except:
                 print(f"{Fore.RED}Failed MsAuth for you, use token.")
                 if manual_bearer == "":
                     token = inp(f"What is your bearer token:  ")
                 else:
                     token = manual_bearer
-                login_name = await get_profile_information(token, "name")
-                print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                try:
+                    login_name = await get_profile_information(token, "name")
+                    print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                except:
+                    print(f"{Fore.GREEN}No previous name")
         elif autype.lower() == "t":
             if manual_bearer == "":
                 token = inp(f"What is your bearer token:  ")
             else:
                 token = manual_bearer
-            login_name = await get_profile_information(token, "name")
-            print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+            try:
+                login_name = await get_profile_information(token, "name")
+                print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+            except:
+                print(f"{Fore.GREEN}No previous name")
         else:
             print(f"{Fore.RED}You did not select a valid option.")
+            exit()
         style = inp(
             f"{Fore.YELLOW}What sniper mode? Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}"
             f"{Fore.YELLOW} and {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}"
