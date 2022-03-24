@@ -245,31 +245,34 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
-    try:
-        r = await requests.get(f"http://api.coolkidmacho.com/droptime/{username}").json()
-        droptime = int(float(r["UNIX"]))
-        return droptime
-    except:
+    async with session.get(f"http://api.coolkidmacho.com/droptime/{username}") as r:
         try:
-            res = await requests.get(f"http://api.star.shopping/droptime/{username}", headers={"User-Agent": "Sniper"}).json()
-            droptime = int(float(res["unix"]))
+            r_json = await r.json()
+            droptime = int(float(r_json["UNIX"]))
             return droptime
         except:
-            try:
-                res = await requests.get(f'http://api.droptime.cc/droptime/{username}')
-                droptime = int(float(res["unix"]))
-                return droptime
-            except:
+            async with session.get(f"http://api.star.shopping/droptime/{username}", headers={"User-Agent": "Sniper"}) as r2:
                 try:
-                    prevOwner = inp(
-                        f"What is the current username of the account that owned {username} before this?:   "
-                    )
-                    res = requests.post("https://mojang-api.teun.lol/upload-droptime",json={"name": username, "prevOwner": prevOwner}).json()
-                    droptime = res["UNIX"]
+                    r_json = await r2.json()
+                    droptime = int(float(r_json["unix"]))
                     return droptime
                 except:
-                    print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
-                    exit()
+                    async with session.get(f'http://api.droptime.cc/droptime/{username}') as r3:
+                        try:
+                            r_json = await r3.json()
+                            droptime = int(float(r_json["unix"]))
+                            return droptime
+                        except:
+                            try:
+                                prevOwner = inp(
+                                    f"What is the current username of the account that owned {username} before this?:   "
+                                )
+                                res = requests.post("https://mojang-api.teun.lol/upload-droptime",json={"name": username, "prevOwner": prevOwner}).json()
+                                droptime = res["UNIX"]
+                                return droptime
+                            except:
+                                print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
+                                exit()
 
 
 async def get_profile_information(bearer: str, attr: str) -> str:
@@ -290,6 +293,7 @@ def get_next_names(amount: int) -> None:
         names = requests.get("https://api.coolkidmacho.com/three").json()
     except:
         print(f"{Fore.LIGHTRED_EX}API is down...")
+        return
     namecount = 0
     for nameseg in names:
         if namecount <= amount:
@@ -597,7 +601,7 @@ async def start() -> None:
         if autype.lower() == "e":
             try:
                 if ms_email == "" or ms_pw == "":
-                    email = inp(f"what is your microsoft email:  ")
+                    email = inp(f"what is your microsoft email: ")
                     password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
                 else:
                     email = ms_email
