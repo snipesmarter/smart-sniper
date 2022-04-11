@@ -62,7 +62,7 @@ We hope to make the sniping experience so automated that once you let it run, it
 
 # Installation
 
-SmartSniper requires [Python v3.8](https://www.python.org/downloads/release/python-3811/) to run.
+SmartSniper requires [Python v3.8](https://www.python.org/downloads/release/python-3811/) or higher to run.
 It also helps to install [Git](https://git-scm.com/download/win) for installation of SmartSniper.
 
 Install the dependencies and start the program.
@@ -72,6 +72,12 @@ git clone https://github.com/snipesmarter/smart-sniper.git
 cd smart-sniper
 pip install -r requirements.txt
 ```
+If this doesn't work at all, do this for every line in requirements.txt:
+```sh
+pip install <name>
+(replace <name> with the name of the import)
+```
+
 You can replace the first step with just downloading the zipped file of this and extracting. You will, however, need to open CMD/*sh to the folder afterwards.
 
 # Usage
@@ -86,23 +92,40 @@ python main.py
 ## Choosing account type
 
 ```sh
-What account type? Enter `g` for giftcard snipes and `m` for mojang and `ms` for microsoft accounts, if you want to get your micorsoft/gc token automatically type `v`: (Choose your option)
+What account type?
+Enter g for giftcard snipes
+Enter m for mojang snipes
+Enter ms for microsoft snipes:
+(Choose your option)
 ```
 
-### MS (ms) or GC (g)
+### Microsoft (ms) or Giftcard (g)
 ```sh
-What is your bearer token:  (look at the section below if you dont know what this means, or how to get it!)
+Microsoft Account/Giftcard Selected, using Microsoft Sniper
+To use Microsoft email and password enter e
+To use Token enter t: (choose your option)
+```
+e - normal authentication with email and password
+t - [Bearer Token](#how-to-get-a-bearer-token)
+```sh
+e
+Microsoft Email: (your microsoft email)
+Password: (your microsoft password)
+```
+```sh
+t
+What is your bearer token: (your token)
 ```
 
-### Mojang (m)
+### Mojang (m) [OUTDATED](https://help.minecraft.net/hc/en-us/articles/360050865492-Minecraft-Java-Edition-Account-Migration-FAQ)
 ```sh
-selected mojang account, transferring to mojang sniper.
 Account Email: (enter your mojang email here)
 Password:   (enter your password here)
 200
 {clientToken: , accessToken: }
 200
 ```
+If you have security questions applied, you have to answer them
 
 ## Choosing a mode
 Here, you will choose autosniper or manual sniping.
@@ -180,17 +203,20 @@ Thanks to Cypheriel#3837 for the original code, this could not be done without h
 # Resources
 
 
-Smart Sniper utilizes public APIs and software made by me (@coolkidmacho) and others.
+Smart Sniper utilizes public APIs and software made by me [coolkidmacho] and others.
 
- - 3USER
-   - Public API to check upcoming 3 letter names.
-   - [https://api.3user.xyz/list](https://api.3user.xyz/list)
  - Kqzz's API
    - Used to determine drop times.
    - [https://github.com/Kqzz/MC-API](https://github.com/Kqzz/MC-API)
  - PyCraft
    - Used to help auto-claim NameMC profiles.
    - [https://github.com/ammaraskar/pyCraft](https://github.com/ammaraskar/pyCraft)
+ - Zodiac API
+   - alternative droptime api
+   - https://github.com/0yq
+ - NameMC
+   - used for search-based and 3char sniping
+   - https://namemc.com
 
 # Useful Programs
 
@@ -245,28 +271,31 @@ Thanks to [MohanadHosny] for:
    - found at https://github.com/MohanadHosny/Microsoft-Minecraft-Auth
 
 Thanks to [chrommie] and [kenny] for:
- - main.py updates
+ - `main.py` updates
    - prompt tidying
 
 Thanks to [chrommie] for:
- - main.py updates
+ - `main.py` updates
    - type declarations
   
 Thanks to [peet] for:
   - NameMc scraping script
-  - main.py tidying
+  - `main.py` tidying
 
 Thanks to [surprise] for:
   - updated bearer grabber script
-  - main.py tidying
+  - `main.py` tidying
 
 Thanks to [coolkidmacho], [overestimate], [TanujKS], and [Kqzz] for:
  - this README and it's contents
 
 Thanks to [MatrixCodeDE] for:
- - main.py updates
+ - `main.py` updates
    - cross platform optimisation
-   - Name Checking for auto 3 char. 
+   - Name Checking for auto 3 char
+   - optional scraper usage
+ - `scraper.py` updates
+   - droptime including
 
 Thanks to issue submitters, issue commenters, stargazers, and anyone missed here for:
  - making this project grow
@@ -279,7 +308,7 @@ Thanks to issue submitters, issue commenters, stargazers, and anyone missed here
    [peet]: <https://github.com/wwhtrbbtt>
    [surprise]: <https://github.com/surprise>
    [overestimate]: <https://github.com/overestimate>
-   [TanjuKS]: <https://github.com/TanujKS>
+   [TanujKS]: <https://github.com/TanujKS>
    [kenny]: <https://github.com/cyberseckenny>
    [MCsniperPY]: <https://mcsniperpy.com/>
    [bearer-info]: <https://kqzz.github.io/mc-bearer-token/>
