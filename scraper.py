@@ -2,13 +2,24 @@ from lib2to3.pgen2 import driver
 import socket
 import ssl
 import certifi
+import os
+import json
 
-import h2
+import h2.connection
+import h2.settings
+import h2.events
+
+from colorama import Fore, Style, init
+
+if os.name == "nt":
+    init(convert=True, autoreset=True)
+else:
+    init(convert=False, autoreset=True)
 
 # Scraping module
 from bs4 import BeautifulSoup
-import datetime
-import dateutil
+from datetime import datetime as ddt
+import dateutil.parser
 
 DEBUG = False
 SERVER_NAME = "namemc.com"
@@ -131,14 +142,17 @@ def getNameInfo(username):
         dropp = dropTime["datetime"]
         dropp = dateutil.parser.parse(dropp).timestamp()
     except:
-        dropp = "name not dropping"
+        dropp = None
     # searches
     searches = int(
         soup.find_all("div", class_="tabular")[0].text.replace(" / month", "")
     )
     # Capitals
     capitals = soup.find_all("samp")[0].text
-    ret = {"searches": searches, "droptime": int(dropp), "spelling": capitals}
+    try:
+        ret = {"searches": searches, "droptime": int(dropp), "spelling": capitals}
+    except:
+        ret = {"searches": searches, "droptime": dropp, "spelling": capitals}
     return ret
 
 
@@ -172,3 +186,78 @@ def getNameHistory(searches=None, length=None):
             pass
 
     return nl
+
+
+def getNameDrops(searches=None, length=None):
+    #print(searches, length)
+    # general data
+    if searches == None:
+        searches = "&"
+    if length == None:
+        length = "&"
+    if length == "&" or length == 0:
+        data = get_data(
+            f"minecraft-names?searches={str(searches)}"
+        )
+    elif searches == "&" or searches == 0:
+        data = get_data(
+            f"minecraft-names?length_op=eq&length={str(length)}"
+        )
+    else:
+        data = get_data(
+            f"minecraft-names?searches={str(searches)}&length_op=eq&length={str(length)}"
+        )
+    data = str(data)
+    #with open("main.html", "w", encoding="utf-8") as f:
+        #f.write(data)
+    soup = BeautifulSoup(data, "html.parser")
+    names = []
+    drops = []
+    #print(soup)
+    # names.append(soup.select_one("div.px-3:nth-child(1)"))
+    names.extend(soup.find_all("td", class_="text-left"))
+    drops.extend(soup.find_all("td", class_="text-left text-nowrap text-ellipsis border-top-0"))
+    # print(names)
+    # print(drops)
+    rel = soup.select("[rel='next']")
+    pnl = []
+    for name in names:
+        try:
+            username = name.find("a").text
+            # print(username)
+            pnl.append(username)
+        except:
+            pass
+    nl = [[0 for x in range(2)] for y in range(len(pnl))]
+    for x in range(len(pnl)):
+        nl[x][0] = pnl[x]
+    x = 0
+    for drop in drops:
+        try:
+            droptime = dateutil.parser.parse(drop.text).timestamp()
+            nl[x][1] = droptime
+            x = x + 1
+        except:
+            #print("pass")
+            pass
+    # print(nl)
+    if len(nl) == 0:
+        print(f"{Fore.RED}No Names found!")
+        return None
+    else:
+        ret = jsonBuilder(nl)
+        return ret
+
+def jsonBuilder(input):
+    structure = None
+    for x in range(len(input)):
+        if x == 0:
+            structure = '{"name":"' + str(input[x][0]) + '","droptime":' + str(input[x][1]) + '},'
+        elif x != len(input)-1:
+            structure = structure + '{"name":"' + str(input[x][0]) + '","droptime":' + str(input[x][1]) + '},'
+        else:
+            structure = structure + '{"name":"' + str(input[x][0]) + '","droptime":' + str(input[x][1]) + '}'
+    structure = '[' + structure + ']'
+    jstruct = json.loads(structure)
+    return jstruct
+
