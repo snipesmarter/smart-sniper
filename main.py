@@ -382,7 +382,8 @@ async def get_profile_information(bearer: str, attr: str) -> str:
                 print(f"{Fore.RED}Failed to login!")
 
 def get_next_names(amount: int) -> None:
-    search, char = 0
+    search = 0
+    char = 0
     sel = inp(
     f"{Fore.YELLOW}For search based sniping select {Fore.GREEN}s{Fore.RESET}\n{Fore.YELLOW}For Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
     )
@@ -797,7 +798,7 @@ async def start() -> None:
             name = inp(f"Name to snipe:  ")
             delay = inp(f"Delay for snipe:  ")
             tuned_delay = delay
-            await mojang_snipe(name, delay, token)
+            await mojang_snipe(name, delay, token, 0)
         else:
             print(f"{Fore.RED}Please select a valid option")
             inp(f"Press enter to exit: ")
@@ -837,7 +838,7 @@ if boot["Type"] != None:
     elif mainset == "g":
         resp = login(email, password)
         token = resp["access_token"]
-        asyncio.run(mojang_snipe(name, delay, token))
+        asyncio.run(mojang_snipe(name, delay, token, 0))
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(start())
