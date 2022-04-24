@@ -126,7 +126,7 @@ def get_config_data():
         if scraperset == "False":
             scraperset = False
         elif scraperset == "True":
-            scraperset = False
+            scraperset = True
 
 
 get_config_data()
@@ -382,7 +382,8 @@ async def get_profile_information(bearer: str, attr: str) -> str:
                 print(f"{Fore.RED}Failed to login!")
 
 def get_next_names(amount: int) -> None:
-    search, char = 0
+    search = 0
+    char = 0
     sel = inp(
     f"{Fore.YELLOW}For search based sniping select {Fore.GREEN}s{Fore.RESET}\n{Fore.YELLOW}For Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
     )
@@ -424,129 +425,6 @@ def get_next_names(amount: int) -> None:
             namecount = namecount + 1
         else:
             return
-
-
-async def snipe(target: str, offset: int, bearer_token: str) -> None:
-    async with aiohttp.ClientSession() as session:
-        if scraperset:
-            try:
-                droptime = get_scaper_drop(target)
-                if droptime == 0:
-                    print(f"{Fore.RED}This name isn't dropping!")
-                    exit()
-            except Exception as e:
-                print(e)
-                print(f"{Fore.RED}Can't scrape names! Report this to a suport channel!")
-                exit()
-        else:
-            try:
-                droptime = await get_droptime(target, session)  # find the droptime!
-            except:
-                print(f"{Fore.RED}Can't get droptime!")
-                exit()
-        offset = int(offset)
-        print(offset)
-        snipe_time = droptime - (offset / 1000)
-        print("current time in unix format is: ", time.time())
-        print(f"{Fore.YELLOW}Calculating...")
-        print(
-            f"{Fore.GREEN}sniping {target} at {droptime} unix time{Fore.RESET} sleeping. "
-        )
-        print(
-            f"{Fore.CYAN}You have successfully queued a name!{Fore.BLUE} Please wait till the name drops!"
-        )
-        while time.time() < snipe_time - 10:
-            await asyncio.sleep(0.001)
-        if (
-            requests.get(
-                "https://api.mojang.com/users/profiles/minecraft/" + target
-            ).status_code
-            == 204
-        ):
-            while time.time() < snipe_time:
-                await asyncio.sleep(0.001)
-            coroutines = [send_request(session, bearer_token, target) for _ in range(6)]
-            await asyncio.gather(*coroutines)
-            store(droptime, offset)
-            changeskin(bearer_token)
-            custom(email, password, bearer_token, target)
-        else:
-            print(f"{Fore.RED}{target} is no longer dropping. Skipping...")
-
-
-async def autosniper(bearer: str) -> None:
-    sel = inp(
-        f"{Fore.YELLOW}For search based sniping select {Fore.GREEN}s{Fore.RESET}\n{Fore.YELLOW}For Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
-    )
-    if sel == "s":
-        try:
-            print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-            if scraperset:
-                searches = inp(
-                    "How many searches do you want?: "
-                )
-                try:
-                    names = scraper.getNameDrops(searches, 0)
-                except Exception as e:
-                    print(e)
-                    print(f"{Fore.RED}Failed to use scaper, report this to a support channel.{Fore.RESET}")
-                    exit()
-            else:
-                searches = inp(
-                    "How many searches do you want ( 50, 100, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000 )?: "
-                )
-                try:
-                    names = requests.get(f"http://api.coolkidmacho.com/up/{searches}").json()[
-                    "names"
-                ]
-                except:
-                    print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
-                    exit()
-        except Exception as e:
-            print(e)
-            print(f"{Fore.RED}Failed to get searched names, report this to a support channel.{Fore.RESET}")
-            exit()
-    if sel == "3":
-        if scraperset:
-            try:
-                print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-                names = scraper.getNameDrops(0,3)
-            except Exception as e:
-                print(e)
-                print(f"{Fore.RED}Failed to use scaper, report this to a support channel.{Fore.RESET}")
-                exit()
-        else:
-            try:
-                print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
-                names = requests.get(f"https://api.coolkidmacho.com/three").json()
-            except:
-                print(
-                    f"{Fore.RED}Failed to get 3names names, report this to a support channel but dont ping anyone.{Fore.RESET}"
-                )
-
-    delay = inp(f"Delay for snipe:  ")
-    if tuned_delay == None:
-        pass
-    else:
-        delay = tuned_delay
-    print(tuned_delay, "tuned delay value")
-    for nameseg in names:
-        tree = requests.get(f"https://api.ashcon.app/mojang/v2/user/{nameseg}")
-        #print(tree.status_code)
-        if tree.status_code == 404 or tree.status_code == 400:
-
-            name = nameseg
-            print(f"Sniping: {name}")
-            if tuned_delay is None:
-                print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
-                pass
-            else:
-                delay = tuned_delay
-                print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
-            print(f"{Fore.CYAN}delay is now ", delay + Fore.RESET)
-            await snipe(name, delay, bearer)
-        else:
-            pass
 
 
 #   Mojang setup and snipe
@@ -683,7 +561,7 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str, drop: int) -
             print(f"{Fore.RED}{target} is no longer dropping. Skipping...")
 
 
-async def automojangsniper(token: str) -> None:
+async def autosniper(token: str) -> None:
     print(f"{Fore.LIGHTGREEN_EX}Starting...{Fore.RESET}")
     searches = 0
     chars = 0
@@ -764,7 +642,7 @@ async def gather_mojang_info() -> None:
             f"{Fore.YELLOW}Enter {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
         )
     if style == "a":
-        await automojangsniper(token)
+        await autosniper(token)
     elif style == "n" or "s":
         if style == "s":
             get_next_names(10)
@@ -860,7 +738,7 @@ async def start() -> None:
             f"{Fore.YELLOW}Enter {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
         )
         if style == "a":
-            await automojangsniper(token)
+            await autosniper(token)
             return
         elif style == "n" or style == "s":
             if style == "s":
@@ -920,7 +798,7 @@ async def start() -> None:
             name = inp(f"Name to snipe:  ")
             delay = inp(f"Delay for snipe:  ")
             tuned_delay = delay
-            await snipe(name, delay, token)
+            await mojang_snipe(name, delay, token, 0)
         else:
             print(f"{Fore.RED}Please select a valid option")
             inp(f"Press enter to exit: ")
@@ -960,7 +838,7 @@ if boot["Type"] != None:
     elif mainset == "g":
         resp = login(email, password)
         token = resp["access_token"]
-        asyncio.run(snipe(name, delay, token))
+        asyncio.run(mojang_snipe(name, delay, token, 0))
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(start())
