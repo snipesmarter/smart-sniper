@@ -72,11 +72,11 @@ raw_account.close()
 
 line = 0
 for x in account:
-    account[line] = account[line].replace("\n","")
-    account[line] = account[line].replace("Email:","")
-    account[line] = account[line].replace("Password:","")
-    account[line] = account[line].replace("Bearer:","")
-    account[line] = account[line].replace(" ","")
+    account[line] = account[line].replace("\n", "")
+    account[line] = account[line].replace("Email:", "")
+    account[line] = account[line].replace("Password:", "")
+    account[line] = account[line].replace("Bearer:", "")
+    account[line] = account[line].replace(" ", "")
     line = line + 1
 
 ms_email = account[1]
@@ -105,7 +105,8 @@ def update():
     )
 
 
-#update()
+# update()
+
 
 def get_config_data():
     with open("config.json") as e:
@@ -141,7 +142,7 @@ def autonamemc(email, password):
 
 
 def changeskin(bearer):
-    #print(bearer, "this")
+    # print(bearer, "this")
     headers = {"Authorization": "Bearer " + bearer}
     files = {
         "variant": (None, "classic"),
@@ -226,29 +227,33 @@ def custom(email, password, token, name):
             changeskin(token)
         except:
             print(f"{Fore.RED}Failed to send change skin!")
-        print("{Fore.GREEN}Congrats!\n{Fore.LIGHTGREEN_EX}You successfully sniped {Fore.GREEN}{name}{Fore.LIGHTGREEN_EX} at {Fore.GREEN}{snipedtime}{Fore.LIGHTGREEN_EX}!")
+        print(
+            "{Fore.GREEN}Congrats!\n{Fore.LIGHTGREEN_EX}You successfully sniped {Fore.GREEN}{name}{Fore.LIGHTGREEN_EX} at {Fore.GREEN}{snipedtime}{Fore.LIGHTGREEN_EX}!"
+        )
         if namemc == "True":
             autonamemc(email, password)
         exit()
+
 
 machoapi = None
 starapi = None
 ccapi = None
 
+
 async def check_connections():
     global scraperset
     print()
-    print(f"\r{Fore.YELLOW}Testing connections: [________] 0%", end = "\r")
+    print(f"\r{Fore.YELLOW}Testing connections: [________] 0%", end="\r")
 
-    try: # Internet
-        requests.get("https://google.com", timeout = 5)
-        print(f"\r{Fore.YELLOW}Testing connections: [██______] 25%", end = "\r")
+    try:  # Internet
+        requests.get("https://google.com", timeout=5)
+        print(f"\r{Fore.YELLOW}Testing connections: [██______] 25%", end="\r")
     except:
         print(f"\r{Fore.RED}Testing connections: [________] 0% ")
         print()
         print(f"{Fore.RED}Make sure your computer is connected to the internet!")
         exit()
-    try: # Coolkidmacho API
+    try:  # Coolkidmacho API
         global machoapi
         machoapi = False
         req = requests.get("https://api.coolkidmacho.com/droptime/abc", timeout=5)
@@ -258,8 +263,8 @@ async def check_connections():
     except:
         pass
     finally:
-        print(f"\r{Fore.YELLOW}Testing connections: [████____] 50%", end = "\r")
-    try: # Star.shopping API
+        print(f"\r{Fore.YELLOW}Testing connections: [████____] 50%", end="\r")
+    try:  # Star.shopping API
         global starapi
         starapi = False
         req = requests.get("http://api.star.shopping/droptime/abc", timeout=5)
@@ -269,8 +274,8 @@ async def check_connections():
     except:
         pass
     finally:
-        print(f"\r{Fore.YELLOW}Testing connections: [██████__] 75%", end = "\r")
-    try: # Droptime.cc API
+        print(f"\r{Fore.YELLOW}Testing connections: [██████__] 75%", end="\r")
+    try:  # Droptime.cc API
         global ccapi
         ccapi = False
         req = requests.get("http://api.droptime.cc/droptime/abc", timeout=5)
@@ -285,7 +290,9 @@ async def check_connections():
             scraperset = True
         if machoapi == False and scraperset == False:
             print()
-            print(f"{Fore.LIGHTRED_EX}Autosniping and searchbased sniping are currently unavailable!")
+            print(
+                f"{Fore.LIGHTRED_EX}Autosniping and searchbased sniping are currently unavailable!"
+            )
             act = inp("Do you want to activate them anyway? Y/N: ").lower()
             if act == "y":
                 file = open("config.json", "w")
@@ -297,11 +304,12 @@ async def check_connections():
                     "msauth": f"{msauth}",
                     "scraper": "True",
                     "webhook": f"{webhook}",
-                    "searches": searches
+                    "searches": searches,
                 }
                 file.write(json.dumps(content, indent=2))
                 file.close()
                 scraperset = True
+
 
 async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None:
     headers = {"Content-type": "application/json", "Authorization": "Bearer " + bearer}
@@ -332,7 +340,10 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
             droptime = int(float(r_json["UNIX"]))
             return droptime
         except:
-            async with session.get(f"http://api.star.shopping/droptime/{username}", headers={"User-Agent": "Sniper"}) as r2:
+            async with session.get(
+                f"http://api.star.shopping/droptime/{username}",
+                headers={"User-Agent": "Sniper"},
+            ) as r2:
                 try:
                     if starapi == False:
                         raise Exception()
@@ -340,7 +351,9 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
                     droptime = int(float(r_json["unix"]))
                     return droptime
                 except:
-                    async with session.get(f"http://api.droptime.cc/droptime/{username}") as r3:
+                    async with session.get(
+                        f"http://api.droptime.cc/droptime/{username}"
+                    ) as r3:
                         try:
                             if ccapi == False:
                                 raise Exception()
@@ -352,11 +365,16 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
                                 prevOwner = inp(
                                     f"What is the current username of the account that owned {username} before this?:   "
                                 )
-                                res = requests.post("https://mojang-api.teun.lol/upload-droptime",json={"name": username, "prevOwner": prevOwner}).json()
+                                res = requests.post(
+                                    "https://mojang-api.teun.lol/upload-droptime",
+                                    json={"name": username, "prevOwner": prevOwner},
+                                ).json()
                                 droptime = res["UNIX"]
                                 return droptime
                             except:
-                                print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
+                                print(
+                                    f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}"
+                                )
                                 exit()
 
 
@@ -368,9 +386,13 @@ async def get_scaper_drop(username: str) -> int:
     else:
         return 0
 
+
 async def get_profile_information(bearer: str, attr: str) -> str:
     async with aiohttp.ClientSession() as s:
-        headers = {"Content-type": "application/json", "Authorization": "Bearer " + bearer}
+        headers = {
+            "Content-type": "application/json",
+            "Authorization": "Bearer " + bearer,
+        }
         async with s.get(
             f"https://api.minecraftservices.com/minecraft/profile",
             headers=headers,
@@ -381,11 +403,12 @@ async def get_profile_information(bearer: str, attr: str) -> str:
             except:
                 print(f"{Fore.RED}Failed to login!")
 
+
 def get_next_names(amount: int) -> None:
     search = 0
     char = 0
     sel = inp(
-    f"{Fore.YELLOW}For search based sniping select {Fore.GREEN}s{Fore.RESET}\n{Fore.YELLOW}For Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
+        f"{Fore.YELLOW}For search based sniping select {Fore.GREEN}s{Fore.RESET}\n{Fore.YELLOW}For Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
     )
     if sel == "s":
         search = inp("How many searches do you want?: ")
@@ -430,7 +453,9 @@ def get_next_names(amount: int) -> None:
 #   Mojang setup and snipe
 
 
-async def send_mojang_request(s: aiohttp.ClientSession, bearer: str, name: str, num: int) -> None:
+async def send_mojang_request(
+    s: aiohttp.ClientSession, bearer: str, name: str, num: int
+) -> None:
     headers = {"Content-type": "application/json", "Authorization": "Bearer " + bearer}
     starttime = time.time()
     async with s.put(
@@ -442,11 +467,17 @@ async def send_mojang_request(s: aiohttp.ClientSession, bearer: str, name: str, 
         endtime = time.time()
         difftime = float(endtime) - float(starttime)
         if r.status == 200:
-            print(f"{Fore.LIGHTCYAN_EX}Response {num} received @ {datetime.now()} with the status {Fore.GREEN}{r.status}")
+            print(
+                f"{Fore.LIGHTCYAN_EX}Response {num} received @ {datetime.now()} with the status {Fore.GREEN}{r.status}"
+            )
             success = True
         else:
-            print(f"{Fore.LIGHTCYAN_EX}Response {num} received @ {datetime.now()} with the status {Fore.RED}{r.status}")
-        print(f"{num} sent: {datetime.fromtimestamp(starttime)} recieved: {datetime.fromtimestamp(endtime)} difference: {difftime}s")
+            print(
+                f"{Fore.LIGHTCYAN_EX}Response {num} received @ {datetime.now()} with the status {Fore.RED}{r.status}"
+            )
+        print(
+            f"{num} sent: {datetime.fromtimestamp(starttime)} recieved: {datetime.fromtimestamp(endtime)} difference: {difftime}s"
+        )
         end.append(datetime.now())
 
 
@@ -530,7 +561,7 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str, drop: int) -
     async with aiohttp.ClientSession() as session:
         if scraperset:
             if drop == 0:
-                droptime = get_scaper_drop(target)
+                droptime = await get_scaper_drop(target)
                 if droptime == 0:
                     print(f"{Fore.RED}This name isn't dropping!")
                     exit()
@@ -540,7 +571,9 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str, drop: int) -
             droptime = await get_droptime(target, session)
         offset = int(offset)
         snipe_time = droptime - (offset / 1000)
-        conv_droptime = datetime.fromtimestamp(droptime).strftime('%H:%M:%S on %Y-%m-%d')
+        conv_droptime = datetime.fromtimestamp(droptime).strftime(
+            "%H:%M:%S on %Y-%m-%d"
+        )
         print(f"{Fore.MAGENTA}sniping {target} at {conv_droptime}")
         while time.time() < snipe_time - 10:
             await asyncio.sleep(0.001)
@@ -566,7 +599,7 @@ async def autosniper(token: str) -> None:
     searches = 0
     chars = 0
     sel = inp(
-    f"{Fore.YELLOW}For search based sniping select {Fore.GREEN}s{Fore.RESET}\n{Fore.YELLOW}For Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
+        f"{Fore.YELLOW}For search based sniping select {Fore.GREEN}s{Fore.RESET}\n{Fore.YELLOW}For Auto 3char Enter {Fore.GREEN}3{Fore.RESET}: "
     )
     if sel == "s":
         searches = inp("How many searches do you want?: ")
@@ -578,18 +611,22 @@ async def autosniper(token: str) -> None:
             names = scraper.getNameDrops(searches, chars)
         except Exception as e:
             print(e)
-            print(f"{Fore.RED}Failed to use scaper, report this to a support channel.{Fore.RESET}")
+            print(
+                f"{Fore.RED}Failed to use scaper, report this to a support channel.{Fore.RESET}"
+            )
             exit()
     else:
         if chars == 0:
             try:
-                names = requests.get(f"https://api.coolkidmacho.com/up/{searches}").json()
+                names = requests.get(
+                    f"https://api.coolkidmacho.com/up/{searches}"
+                ).json()
             except:
                 print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
                 print(
                     f"{Fore.LIGHTRED_EX}You can activate it in config.json by setting\n"
                     f'{Fore.LIGHTRED_EX}"scraper": "True"'
-                    )
+                )
                 exit()
         else:
             try:
@@ -599,9 +636,9 @@ async def autosniper(token: str) -> None:
                 print(
                     f"{Fore.LIGHTRED_EX}You can activate it in config.json by setting\n"
                     f'{Fore.LIGHTRED_EX}"scraper": "True"'
-                    )
+                )
                 exit()
-    #print(names)
+    # print(names)
     delay = inp(f"Delay for snipe:  ")
     print(tuned_delay, "tuned delay value")
     for nameseg in names:
@@ -636,11 +673,11 @@ async def gather_mojang_info() -> None:
     password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
     token = await get_mojang_token(email, password)
     style = inp(
-            f"{Fore.YELLOW}What sniper mode?\n"
-            f"{Fore.YELLOW}Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}\n"
-            f"{Fore.YELLOW}Enter {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}\n"
-            f"{Fore.YELLOW}Enter {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
-        )
+        f"{Fore.YELLOW}What sniper mode?\n"
+        f"{Fore.YELLOW}Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}\n"
+        f"{Fore.YELLOW}Enter {Fore.GREEN}n{Fore.YELLOW} for single name sniping {Fore.RESET}\n"
+        f"{Fore.YELLOW}Enter {Fore.GREEN}s{Fore.YELLOW} to show next 3chars: {Fore.RESET}"
+    )
     if style == "a":
         await autosniper(token)
     elif style == "n" or "s":
@@ -696,7 +733,9 @@ async def start() -> None:
             try:
                 if ms_email == "" or ms_pw == "":
                     email = inp(f"Microsoft email: ")
-                    password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
+                    password = pwinput.pwinput(
+                        prompt=f"{Fore.YELLOW}Password: ", mask="*"
+                    )
                 else:
                     email = ms_email
                     password = ms_pw
@@ -704,7 +743,9 @@ async def start() -> None:
                 token = resp["access_token"]
                 try:
                     login_name = await get_profile_information(token, "name")
-                    print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                    print(
+                        f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}"
+                    )
                 except:
                     print(f"{Fore.GREEN}No previous name")
             except:
@@ -715,7 +756,9 @@ async def start() -> None:
                     token = manual_bearer
                 try:
                     login_name = await get_profile_information(token, "name")
-                    print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                    print(
+                        f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}"
+                    )
                 except:
                     print(f"{Fore.GREEN}No previous name")
         elif autype.lower() == "t":
@@ -725,7 +768,9 @@ async def start() -> None:
                 token = manual_bearer
             try:
                 login_name = await get_profile_information(token, "name")
-                print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
+                print(
+                    f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}"
+                )
             except:
                 print(f"{Fore.GREEN}No previous name")
         else:
@@ -762,8 +807,10 @@ async def start() -> None:
             try:
                 if ms_email == "" or ms_pw == "":
                     email = inp(f"Microsoft email:  ")
-                    password = pwinput.pwinput(prompt=f"{Fore.YELLOW}Password: ", mask="*")
-                else: 
+                    password = pwinput.pwinput(
+                        prompt=f"{Fore.YELLOW}Password: ", mask="*"
+                    )
+                else:
                     email = ms_email
                     password = ms_pw
                 resp = login(email, password)
@@ -778,7 +825,7 @@ async def start() -> None:
         elif autype.lower() == "t":
             if manual_bearer == "":
                 token = inp(f"What is your bearer token:  ")
-            else: 
+            else:
                 token = manual_bearer
         else:
             print(f"{Fore.RED}You did not select a valid option.")
@@ -817,7 +864,7 @@ parser.add_argument("-e", "--Email", help="Email")
 parser.add_argument("-p", "--Password", help="Password")
 
 args = parser.parse_args()
-#print(vars(args))
+# print(vars(args))
 boot = vars(args)
 if boot["Type"] != None:
     mainset = boot["Type"].replace(" ", "")
