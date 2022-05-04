@@ -364,7 +364,14 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
                             prevOwner = inp(
                                 f"What is the current username of the account that owned {username} before this?:   "
                             )
-                            droptime = scraper.prevOwnerDroptime(username, prevOwner)
+                            if scraperset == True:
+                                droptime = scraper.prevOwnerDroptime(username, prevOwner)
+                            else:
+                                try:
+                                    res = requests.post("https://mojang-api.teun.lol/upload-droptime",json={"name": username, "prevOwner": prevOwner}).json()
+                                    droptime = res["UNIX"]
+                                except:
+                                    droptime = None
                             if droptime != None:
                                 return droptime
                             else:
@@ -541,8 +548,10 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str, drop: int) -
             if drop == None:
                 droptime = get_scaper_drop(target)
                 if droptime == None:
-                    print(f"{Fore.RED}This name isn't dropping or the scraper doesn't work in your country!")
-                    exit()
+                    droptime = await get_droptime(target, session)
+                    if droptime == None:
+                        print(f"{Fore.RED}This name isn't dropping!")
+                        return
             else:
                 droptime = drop
         else:
