@@ -4,6 +4,7 @@ import ssl
 import certifi
 import os
 import json
+import requests
 
 import h2.connection
 import h2.settings
@@ -261,3 +262,26 @@ def jsonBuilder(input):
     jstruct = json.loads(structure)
     return jstruct
 
+def prevOwnerDroptime(name: str, prevOwner: str):
+    headers = {"Content-Type": "application/json"}
+    payload = [f"{prevOwner}"]
+    response = requests.post("https://api.mojang.com/profiles/minecraft", data=json.dumps(payload), headers=headers).json()
+    uuid = response[0]["id"]
+    
+    response = requests.get(f"https://api.mojang.com/user/profiles/{uuid}/names").json()
+    if response[-2]["name"] == name:
+        changetime = response[-1]["changedToAt"]
+        droptime = changetime + 3196800
+        return droptime
+    else:
+        return None
+
+def check_scraper(): # Checks if you can use the scraper (doesn't work in some countries)
+    data = get_data(f"minecraft-names")
+    data = str(data)
+    soup = BeautifulSoup(data, "html.parser")
+    content = str(soup)
+    if content.find("td") >= 0:
+        return True
+    else:
+        return False

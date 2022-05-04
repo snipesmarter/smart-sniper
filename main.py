@@ -129,7 +129,6 @@ def get_config_data():
             scraperset = True
 
 
-get_config_data()
 
 
 def autonamemc(email, password):
@@ -281,10 +280,12 @@ async def check_connections():
         pass
     finally:
         print(f"\r{Fore.YELLOW}Testing connections: [████████] 100%")
+        print()
         if machoapi == False and starapi == False and ccapi == False:
             scraperset = True
-        if machoapi == False and scraperset == False:
-            print()
+            print(f"{Fore.LIGHTRED_EX}Can't reach any droptime API!")
+            print(f"{Fore.LIGHTYELLOW_EX}Forcing scraper...")
+        elif machoapi == False and scraperset == False:
             print(f"{Fore.LIGHTRED_EX}Autosniping and searchbased sniping are currently unavailable!")
             act = inp("Do you want to activate them anyway? Y/N: ").lower()
             if act == "y":
@@ -302,6 +303,18 @@ async def check_connections():
                 file.write(json.dumps(content, indent=2))
                 file.close()
                 scraperset = True
+            else:
+                print(f"{Fore.RED}Deactivating scraper...")
+            print()
+        if scraperset == True:
+            if scraper.check_scraper() == True:
+                print(f"{Fore.GREEN}Successfully activated scraper")
+            else:
+                scraperset = False
+                print(f"{Fore.RED}Warning! It seems that the scraper doesn't work in your region!")
+                print(f"{Fore.RED}Deactivating scraper...")
+        print()
+        
 
 async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None:
     headers = {"Content-type": "application/json", "Authorization": "Bearer " + bearer}
@@ -348,14 +361,13 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
                             droptime = int(float(r_json["unix"]))
                             return droptime
                         except:
-                            try:
-                                prevOwner = inp(
-                                    f"What is the current username of the account that owned {username} before this?:   "
-                                )
-                                res = requests.post("https://mojang-api.teun.lol/upload-droptime",json={"name": username, "prevOwner": prevOwner}).json()
-                                droptime = res["UNIX"]
+                            prevOwner = inp(
+                                f"What is the current username of the account that owned {username} before this?:   "
+                            )
+                            droptime = scraper.prevOwnerDroptime(username, prevOwner)
+                            if droptime != None:
                                 return droptime
-                            except:
+                            else:
                                 print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the feild correctly!{Fore.RESET}")
                                 exit()
 
@@ -363,10 +375,7 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
 async def get_scaper_drop(username: str) -> int:
     nameinfo = scraper.getNameInfo(username)
     drop = nameinfo["droptime"]
-    if drop != None:
-        return drop
-    else:
-        return 0
+    return drop
 
 async def get_profile_information(bearer: str, attr: str) -> str:
     async with aiohttp.ClientSession() as s:
@@ -529,10 +538,10 @@ async def get_mojang_token(email: str, password: str) -> str:
 async def mojang_snipe(target: str, offset: int, bearer_token: str, drop: int) -> None:
     async with aiohttp.ClientSession() as session:
         if scraperset:
-            if drop == 0:
+            if drop == None:
                 droptime = get_scaper_drop(target)
-                if droptime == 0:
-                    print(f"{Fore.RED}This name isn't dropping!")
+                if droptime == None:
+                    print(f"{Fore.RED}This name isn't dropping or the scraper doesn't work in your country!")
                     exit()
             else:
                 droptime = drop
@@ -559,6 +568,8 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str, drop: int) -
             store(droptime, offset)
         else:
             print(f"{Fore.RED}{target} is no longer dropping. Skipping...")
+        if success == True:
+            custom(email, password, token, name)
 
 
 async def autosniper(token: str) -> None:
@@ -573,62 +584,64 @@ async def autosniper(token: str) -> None:
         searches = int(searches)
     elif sel == "3":
         chars = 3
-    if scraperset:
-        try:
-            names = scraper.getNameDrops(searches, chars)
-        except Exception as e:
-            print(e)
-            print(f"{Fore.RED}Failed to use scaper, report this to a support channel.{Fore.RESET}")
-            exit()
-    else:
-        if chars == 0:
-            try:
-                names = requests.get(f"https://api.coolkidmacho.com/up/{searches}").json()
-            except:
-                print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
-                print(
-                    f"{Fore.LIGHTRED_EX}You can activate it in config.json by setting\n"
-                    f'{Fore.LIGHTRED_EX}"scraper": "True"'
-                    )
-                exit()
-        else:
-            try:
-                names = requests.get("https://api.coolkidmacho.com/three").json()
-            except:
-                print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
-                print(
-                    f"{Fore.LIGHTRED_EX}You can activate it in config.json by setting\n"
-                    f'{Fore.LIGHTRED_EX}"scraper": "True"'
-                    )
-                exit()
-    #print(names)
-    delay = inp(f"Delay for snipe:  ")
-    print(tuned_delay, "tuned delay value")
-    for nameseg in names:
-        name = nameseg["name"]
+    while True:
         if scraperset:
-            droptime = nameseg["droptime"]
-            namecheck = requests.get(f"https://api.ashcon.app/mojang/v2/user/{name}")
-            if namecheck.status_code == 404:
-                if tuned_delay is None:
-                    print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
-                    pass
-                else:
-                    delay = tuned_delay
-                    print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
-                print("delay is now ", delay)
-                await mojang_snipe(name, delay, token, droptime)
+            try:
+                names = scraper.getNameDrops(searches, chars)
+            except Exception as e:
+                print(e)
+                print(f"{Fore.RED}Failed to use scaper, report this to a support channel.{Fore.RESET}")
+                exit()
         else:
-            namecheck = requests.get(f"https://api.ashcon.app/mojang/v2/user/{name}")
-            if namecheck.status_code == 404:
-                if tuned_delay is None:
-                    print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
-                    pass
-                else:
-                    delay = tuned_delay
-                    print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
-                print("delay is now ", delay)
-                await mojang_snipe(name, delay, token, 0)
+            if chars == 0:
+                try:
+                    names = requests.get(f"https://api.coolkidmacho.com/up/{searches}").json()
+                except:
+                    print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
+                    print(
+                        f"{Fore.LIGHTRED_EX}You can activate it in config.json by setting\n"
+                        f'{Fore.LIGHTRED_EX}"scraper": "True"'
+                        )
+                    exit()
+            else:
+                try:
+                    names = requests.get("https://api.coolkidmacho.com/three").json()
+                except:
+                    print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
+                    print(
+                        f"{Fore.LIGHTRED_EX}You can activate it in config.json by setting\n"
+                        f'{Fore.LIGHTRED_EX}"scraper": "True"'
+                        )
+                    exit()
+        #print(names)
+        delay = inp(f"Delay for snipe:  ")
+        print(tuned_delay, "tuned delay value")
+        for nameseg in names:
+            name = nameseg["name"]
+            if scraperset:
+                droptime = nameseg["droptime"]
+                namecheck = requests.get(f"https://api.ashcon.app/mojang/v2/user/{name}")
+                if namecheck.status_code == 404:
+                    if tuned_delay is None:
+                        print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
+                        pass
+                    else:
+                        delay = tuned_delay
+                        print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
+                    print("delay is now ", delay)
+                    await mojang_snipe(name, delay, token, droptime)
+            else:
+                namecheck = requests.get(f"https://api.ashcon.app/mojang/v2/user/{name}")
+                if namecheck.status_code == 404:
+                    if tuned_delay is None:
+                        print(f"{Fore.CYAN}Defaulting...{Fore.RESET}")
+                        pass
+                    else:
+                        delay = tuned_delay
+                        print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
+                    print("delay is now ", delay)
+                    await mojang_snipe(name, delay, token, None)
+    
 
 
 async def gather_mojang_info() -> None:
@@ -649,9 +662,7 @@ async def gather_mojang_info() -> None:
         name = inp(f"Name to snipe:  ")
         delay = inp(f"Delay for snipe:  ")
         tuned_delay = delay
-        await mojang_snipe(name, delay, token, 0)
-        print("Sniping...")
-    custom(email, password, token, name)
+        await mojang_snipe(name, delay, token, None)
 
 
 async def iterate_through_names(session: aiohttp.ClientSession) -> None:
@@ -661,7 +672,7 @@ async def iterate_through_names(session: aiohttp.ClientSession) -> None:
             if r.status < 300:
                 for name in r_json:
                     yield name["name"]
-                asyncio.sleep(1)
+                await asyncio.sleep(1)
             else:
                 print(f"Failed to get names, retrying... | {r.status}")
                 await asyncio.sleep(10)
@@ -669,9 +680,10 @@ async def iterate_through_names(session: aiohttp.ClientSession) -> None:
 
 async def start() -> None:
     global scraperset
+    get_config_data()
     await check_connections()
     mainset = inp(
-        f"\n\n{Fore.LIGHTBLUE_EX}What account type? \n"
+        f"\n{Fore.LIGHTBLUE_EX}What account type? \n"
         f"{Fore.LIGHTBLUE_EX}Enter {Fore.GREEN}g{Fore.RESET}{Fore.LIGHTBLUE_EX} for giftcard snipes \n"
         f"{Fore.LIGHTBLUE_EX}Enter {Fore.GREEN}m{Fore.RESET} {Fore.LIGHTBLUE_EX}for mojang snipes \n"
         f"{Fore.LIGHTBLUE_EX}Enter {Fore.GREEN}ms{Fore.RESET} {Fore.LIGHTBLUE_EX}for microsoft snipes: "
@@ -748,7 +760,7 @@ async def start() -> None:
             delay = inp(f"Delay for snipe:  ")
             global tuned_delay
             tuned_delay = delay
-            await (mojang_snipe(name, delay, token, 0))
+            await (mojang_snipe(name, delay, token, None))
     elif mainset == "g":
         print(
             f"{Fore.LIGHTGREEN_EX}Giftcard Selected, using Microsoft Sniper{Fore.RESET}"
@@ -798,7 +810,7 @@ async def start() -> None:
             name = inp(f"Name to snipe:  ")
             delay = inp(f"Delay for snipe:  ")
             tuned_delay = delay
-            await mojang_snipe(name, delay, token, 0)
+            await mojang_snipe(name, delay, token, None)
         else:
             print(f"{Fore.RED}Please select a valid option")
             inp(f"Press enter to exit: ")
@@ -828,17 +840,9 @@ if boot["Type"] != None:
     if mainset == "m":
         loop = asyncio.get_event_loop()
         token = loop.run_until_complete(get_mojang_token(email, password))
-        asyncio.run(mojang_snipe(name, delay, token, 0))
-        if success == True:
-            custom(email, password, token, name)
-    elif mainset == "ms":
+    elif mainset == "ms" or mainset == "g":
         resp = login(email, password)
         token = resp["access_token"]
-        asyncio.run(mojang_snipe(name, delay, token, 0))
-    elif mainset == "g":
-        resp = login(email, password)
-        token = resp["access_token"]
-        asyncio.run(mojang_snipe(name, delay, token, 0))
-
+    asyncio.run(mojang_snipe(name, delay, token, None))
 loop = asyncio.get_event_loop()
 loop.run_until_complete(start())
