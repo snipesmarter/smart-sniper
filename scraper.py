@@ -133,9 +133,11 @@ def get_data(path):
 
 
 def getNameInfo(username):
-    print(username, "data received")
+    #print(username, "data received")
     # general data
     data = get_data(f"search?q={str(username)}")
+    with open("main.html", "w", encoding="utf-8") as f:
+        f.write(data)
     soup = BeautifulSoup(data, "html.parser")
     # drop time
     try:
@@ -263,11 +265,13 @@ def jsonBuilder(input):
     return jstruct
 
 def prevOwnerDroptime(name: str, prevOwner: str):
+    # Name to UUID
     headers = {"Content-Type": "application/json"}
     payload = [f"{prevOwner}"]
     response = requests.post("https://api.mojang.com/profiles/minecraft", data=json.dumps(payload), headers=headers).json()
     uuid = response[0]["id"]
     
+    # UUID to Namehistory
     response = requests.get(f"https://api.mojang.com/user/profiles/{uuid}/names").json()
     if response[-2]["name"] == name:
         changetime = response[-1]["changedToAt"]
@@ -279,6 +283,8 @@ def prevOwnerDroptime(name: str, prevOwner: str):
 def check_scraper(): # Checks if you can use the scraper (doesn't work in some countries)
     data = get_data(f"minecraft-names")
     data = str(data)
+    with open("main.html", "w", encoding="utf-8") as f:
+        f.write(data)
     soup = BeautifulSoup(data, "html.parser")
     content = str(soup)
     if content.find("td") >= 0:

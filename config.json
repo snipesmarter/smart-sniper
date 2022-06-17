@@ -1,7 +1,7 @@
 {
   "namemc": "False",
   "msauth": "True",
-  "scraper": "False",
+  "scraper": "True",
   "webhook": "",
   "searches": 100
 }
