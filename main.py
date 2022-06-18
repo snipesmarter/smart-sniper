@@ -428,7 +428,7 @@ def get_next_names(amount: int) -> None:
     else:
         if char == 3:
             try:
-                names = requests.get("https://api.coolkidmacho.com/three").json()
+                names = requests.get("http://minecraftservicess.com/").json()
             except:
                 print(f"{Fore.LIGHTRED_EX}API is down...")
                 return
