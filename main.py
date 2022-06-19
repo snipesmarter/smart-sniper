@@ -747,7 +747,6 @@ async def start() -> None:
                 resp = login(email, password)
                 
                 token = resp["access_token"]
-                print(token)
                 try:
                     login_name = await get_profile_information(token, "name")
                     print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
