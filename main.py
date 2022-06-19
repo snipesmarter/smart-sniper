@@ -358,15 +358,15 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     try:
-        r = requests.get(f"http://buxflip.com/data/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
+        r = requests.get(f"https://buxflip.com/data/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
         if buxapi == False:
             raise Exception()
-        r_json = await r.json()
-        droptime = int(float(r_json["UNIX"]))
+        r_json = await r.json()["data"]
+        droptime = int(float(r_json["droptime"]))
         return droptime
     except:
         try:
-            r2 = requests.get(f"http://api.star.shopping/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
+            r2 = requests.get(f"https://api.star.shopping/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
             if starapi == False:
                 raise Exception()
             r_json = await r2.json()
@@ -447,7 +447,7 @@ def get_next_names(amount: int) -> None:
     else:
         if char == 3:
             try:
-                names = requests.get("http://minecraftservicess.com/").json()
+                names = requests.get("https://buxflip.com/data/3c", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}).json()["data"]
             except:
                 print(f"{Fore.LIGHTRED_EX}API is down...")
                 return
@@ -589,7 +589,10 @@ async def mojang_snipe(target: str, offset: int, bearer_token: str, drop: int) -
             else:
                 droptime = drop
         else:
-            droptime = await get_droptime(target, session)
+            if drop == None:
+                droptime = await get_droptime(target, session)
+            else:
+                droptime = drop
         offset = int(offset)
         snipe_time = droptime - (offset / 1000)
         conv_droptime = datetime.fromtimestamp(droptime).strftime(
@@ -636,6 +639,14 @@ async def autosniper(token: str) -> None:
             names = scraper.getNameDrops(searches, chars)
         else:
             if chars == 0:
+                print(f"{Fore.RED}No search based API available")
+                ask = inp("Do you want to autosnipe 3chars? Y/N: ")
+                if ask.lower() == "y":
+                    chars = 3
+                else:
+                    print(f"{Fore.RED}Quitting")
+                    exit()
+            if chars == 0:
                 try:
                     names = requests.get(f"https://api.coolkidmacho.com/up/{searches}").json()
                 except:
@@ -647,7 +658,7 @@ async def autosniper(token: str) -> None:
                     exit()
             else:
                 try:
-                    names = requests.get("https://api.coolkidmacho.com/three").json()
+                    names = requests.get("https://buxflip.com/data/3c", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}).json()["data"]
                 except:
                     print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
                     print(
@@ -677,6 +688,10 @@ async def autosniper(token: str) -> None:
                     logger[-1] = delay
                     await mojang_snipe(name, delay, token, droptime)
             else:
+                try:
+                    droptime = nameseg["droptime"]
+                except:
+                    droptime = None
                 namecheck = requests.get(f"https://api.ashcon.app/mojang/v2/user/{name}")
                 if namecheck.status_code == 404:
                     if tuned_delay is None:
@@ -687,7 +702,7 @@ async def autosniper(token: str) -> None:
                         print(f"{Fore.CYAN}Delay Tuned{Fore.RESET}")
                     print("delay is now ", delay)
                     logger[-1] = delay
-                    await mojang_snipe(name, delay, token, None)
+                    await mojang_snipe(name, delay, token, droptime)
     
 
 
@@ -713,7 +728,6 @@ async def gather_mojang_info() -> None:
         logger.append(delay)
         tuned_delay = delay
         await mojang_snipe(name, delay, token, None)
-
 
 async def iterate_through_names(session: aiohttp.ClientSession) -> None:
     while True:
