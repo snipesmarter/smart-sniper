@@ -31,7 +31,7 @@ logo = rf"""{Fore.GREEN}
 """
 print(logo)
 print(Fore.LIGHTCYAN_EX + Style.BRIGHT + "Created by Coolkidmacho#0001" + Fore.RESET)
-print(Fore.LIGHTCYAN_EX + "With the wonderful assistance of Kqzz#0001" + Fore.RESET)
+print(Fore.LIGHTCYAN_EX + "With the wonderful assistance of Kqzz#0606" + Fore.RESET)
 print(f"{Fore.MAGENTA}Make sure to join https://discord.gg/KweaD6G97f\n")
 print(
     f"{Style.BRIGHT}{Fore.YELLOW}If you want to boost or donate message Coolkidmacho#0001 on discord"
@@ -249,7 +249,7 @@ def custom(email, password, token, name):
             autonamemc(email, password)
         exit()
 
-machoapi = None
+buxapi = None
 starapi = None
 ccapi = None
 
@@ -267,12 +267,12 @@ async def check_connections():
         print(f"{Fore.RED}Make sure your computer is connected to the internet!")
         exit()
     try: # Coolkidmacho API
-        global machoapi
-        machoapi = False
-        req = requests.get("https://api.coolkidmacho.com/droptime/abc", timeout=5)
+        global buxapi
+        buxapi = False
+        req = requests.get("https://buxflip.com/data/3c", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}, timeout=5)
         if req.status_code == 404:
             raise Exception
-        machoapi = True
+        buxapi = True
     except:
         pass
     finally:
@@ -280,7 +280,7 @@ async def check_connections():
     try: # Star.shopping API
         global starapi
         starapi = False
-        req = requests.get("http://api.star.shopping/droptime/abc", timeout=5)
+        req = requests.get("http://api.star.shopping/droptime/abc", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}, timeout=5)
         if req.status_code == 503:
             raise Exception
         starapi = True
@@ -300,30 +300,21 @@ async def check_connections():
     finally:
         print(f"\r{Fore.YELLOW}Testing connections: [████████] 100%")
         print()
-        if machoapi == False and starapi == False and ccapi == False and scraperset == False:
-            scraperset = True
+        if buxapi == False and starapi == False and ccapi == False and scraperset == False:
             print(f"{Fore.LIGHTRED_EX}Can't reach any droptime API!")
-            print(f"{Fore.LIGHTYELLOW_EX}Forcing scraper...")
-        elif machoapi == False and scraperset == False:
-            print(f"{Fore.LIGHTRED_EX}Autosniping and searchbased sniping are currently unavailable!")
-            act = inp("Do you want to activate them anyway? Y/N: ").lower()
-            if act == "y":
-                file = open("config.json", "w")
-                global webhook
-                if webhook == None:
-                    webhook = ""
-                content = {
-                    "namemc": f"{namemc}",
-                    "msauth": f"{msauth}",
-                    "scraper": "True",
-                    "webhook": f"{webhook}",
-                    "searches": searches
-                }
-                file.write(json.dumps(content, indent=2))
-                file.close()
+            if scraper.check_scraper() == True:
+                scraperset = True
+                print(f"{Fore.LIGHTYELLOW_EX}Forcing scraper...")
+            else:
+                print(f"{Fore.RED}Can't use scraper in your country!")
+                print(f"{Fore.RED}Quitting...")
+                exit()
+        elif buxapi == False and scraperset == False:
+            if scraper.check_scraper() == True:
                 scraperset = True
             else:
-                print(f"{Fore.RED}Deactivating scraper...")
+                print(f"{Fore.LIGHTRED_EX}Autosniping and searchbased sniping are currently unavailable!")
+            
             print()
         if scraperset == True:
             if scraper.check_scraper() == True:
@@ -332,7 +323,7 @@ async def check_connections():
                 scraperset = False
                 print(f"{Fore.RED}Warning! It seems that the scraper doesn't work in your region!")
                 print(f"{Fore.RED}Deactivating scraper...")
-                if machoapi == False and starapi == False and ccapi == False:
+                if buxapi == False and starapi == False and ccapi == False:
                     print(f"{Fore.RED}The sniper has no way to get the droptime!")
                     print(f"{Fore.YELLOW}If you know a public API that gets the droptime of names\nyou can report this to a support channel:\nhttps://discord.gg/KweaD6G97f")
                     print(f"{Fore.RED}Shutting down sniper")
@@ -362,15 +353,15 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     try:
-        r = requests.get(f"http://api.coolkidmacho.com/droptime/{username}")
-        if machoapi == False:
+        r = requests.get(f"http://buxflip.com/data/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
+        if buxapi == False:
             raise Exception()
         r_json = await r.json()
         droptime = int(float(r_json["UNIX"]))
         return droptime
     except:
         try:
-            r2 = requests.get(f"http://api.star.shopping/droptime/{username}", headers={"User-Agent": "Sniper"})
+            r2 = requests.get(f"http://api.star.shopping/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
             if starapi == False:
                 raise Exception()
             r_json = await r2.json()
@@ -379,28 +370,29 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
         except:
             try:
                 r3 = requests.get(f"http://api.droptime.cc/droptime/{username}")
-                if ccapi == False:
-                    raise Exception()
                 r_json = await r3.json()
                 droptime = int(float(r_json["unix"]))
                 return droptime
             except:
-                prevOwner = inp(
-                    f"What is the current username of the account that owned {username} before this?:   "
-                )
-                if scraperset == True:
-                    droptime = scraper.prevOwnerDroptime(username, prevOwner)
-                else:
+                try:
+                    if scraperset == False:
+                        raise Exception
+                    res = scraper.getNameInfo(username)
+                    return res["droptime"]
+                except:
+                    prevOwner = inp(
+                        f"What is the current username of the account that owned {username} before this?:   "
+                    )
                     try:
                         res = requests.post("https://mojang-api.teun.lol/upload-droptime",json={"name": username, "prevOwner": prevOwner}).json()
                         droptime = res["UNIX"]
                     except:
                         droptime = None
-                if droptime != None:
-                    return droptime
-                else:
-                    print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the field correctly!{Fore.RESET}")
-                    exit()
+                    if droptime != None:
+                        return droptime
+                    else:
+                        print(f"{Fore.LIGHTRED_EX}Droptime for name not found, make sure you entered the details into the field correctly!{Fore.RESET}")
+                        exit()
 
 
 async def get_scaper_drop(username: str) -> int:
@@ -753,7 +745,9 @@ async def start() -> None:
                     email = ms_email
                     password = ms_pw
                 resp = login(email, password)
+                
                 token = resp["access_token"]
+                print(token)
                 try:
                     login_name = await get_profile_information(token, "name")
                     print(f"{Fore.GREEN}Logged into {Fore.LIGHTCYAN_EX}{Style.BRIGHT}{login_name}")
