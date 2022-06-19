@@ -3,7 +3,6 @@ requests
 colorama
 typing
 h2
-python-dateutil
 pwinput
 bs4
 python-dateutil
