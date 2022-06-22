@@ -359,23 +359,19 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     try:
         r = requests.get(f"https://buxflip.com/data/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
-        if buxapi == False:
-            raise Exception()
-        r_json = await r.json()["data"]
+        r_json = r.json()["data"]
         droptime = int(float(r_json["droptime"]))
         return droptime
     except:
         try:
             r2 = requests.get(f"https://api.star.shopping/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
-            if starapi == False:
-                raise Exception()
-            r_json = await r2.json()
+            r_json = r2.json()
             droptime = int(float(r_json["unix"]))
             return droptime
         except:
             try:
                 r3 = requests.get(f"http://api.droptime.cc/droptime/{username}")
-                r_json = await r3.json()
+                r_json = r3.json()
                 droptime = int(float(r_json["unix"]))
                 return droptime
             except:
@@ -389,8 +385,7 @@ async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
                         f"What is the current username of the account that owned {username} before this?:   "
                     )
                     try:
-                        res = requests.post("https://mojang-api.teun.lol/upload-droptime",json={"name": username, "prevOwner": prevOwner}).json()
-                        droptime = res["UNIX"]
+                        droptime = scraper.prevOwnerDroptime(prevOwner)
                     except:
                         droptime = None
                     if droptime != None:
