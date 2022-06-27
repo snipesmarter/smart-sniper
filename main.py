@@ -21,7 +21,7 @@ else:
     init(convert=False, autoreset=True)
 
 cl = False
-if cl:
+if cl:  
     os.system("cls" if os.name == "nt" else "clear")
 logo = rf"""{Fore.GREEN}
   __  __ __  __  ___ _____    __  __  _ _ ___ ___ ___
@@ -31,7 +31,7 @@ logo = rf"""{Fore.GREEN}
 """
 print(logo)
 print(Fore.LIGHTCYAN_EX + Style.BRIGHT + "Created by Coolkidmacho#0001" + Fore.RESET)
-print(Fore.LIGHTCYAN_EX + "With the wonderful assistance of Kqzz#0606" + Fore.RESET)
+print(Fore.LIGHTCYAN_EX + "With the wonderful assistance of "+ Style.BRIGHT + "Kqzz#0606" + Style.NORMAL + " and " + Style.BRIGHT + "MatrixGraphicz#7585" + Fore.RESET)
 print(f"{Fore.MAGENTA}Make sure to join https://discord.gg/KweaD6G97f\n")
 print(
     f"{Style.BRIGHT}{Fore.YELLOW}If you want to boost or donate message Coolkidmacho#0001 on discord"
@@ -252,7 +252,7 @@ def custom(email, password, token, name):
             autonamemc(email, password)
         exit()
 
-buxapi = None
+threeapi = None
 starapi = None
 ccapi = None
 
@@ -270,13 +270,13 @@ async def check_connections():
         print()
         print(f"{Fore.RED}Make sure your computer is connected to the internet!")
         exit()
-    try: # Coolkidmacho API
-        global buxapi
-        buxapi = False
-        req = requests.get("https://buxflip.com/data/3c", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}, timeout=5)
+    try: # 3C API
+        global threeapi
+        threeapi = False
+        req = requests.get("http://minecraftservicess.com/", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}, timeout=5)
         if req.status_code == 404:
             raise Exception
-        buxapi = True
+        threeapi = True
     except:
         pass
     finally:
@@ -304,7 +304,9 @@ async def check_connections():
     finally:
         print(f"\r{Fore.YELLOW}Testing connections: [████████] 100%")
         print()
-        if buxapi == False and starapi == False and ccapi == False and scraperset == False:
+        print(f"{Fore.YELLOW}3Char API: {threeapi} | Star API: {starapi} | CC API: {ccapi}")
+        print()
+        if threeapi == False and starapi == False and ccapi == False and scraperset == False:
             print(f"{Fore.LIGHTRED_EX}Can't reach any droptime API!")
             if scraper.check_scraper() == True:
                 scraperset = True
@@ -313,7 +315,7 @@ async def check_connections():
                 print(f"{Fore.RED}Can't use scraper in your country!")
                 print(f"{Fore.RED}Quitting...")
                 exit()
-        elif buxapi == False and scraperset == False:
+        elif threeapi == False and scraperset == False:
             if scraper.check_scraper() == True:
                 scraperset = True
             else:
@@ -327,7 +329,7 @@ async def check_connections():
                 scraperset = False
                 print(f"{Fore.RED}Warning! It seems that the scraper doesn't work in your region!")
                 print(f"{Fore.RED}Deactivating scraper...")
-                if buxapi == False and starapi == False and ccapi == False:
+                if threeapi == False and starapi == False and ccapi == False:
                     print(f"{Fore.RED}The sniper has no way to get the droptime!")
                     print(f"{Fore.YELLOW}If you know a public API that gets the droptime of names\nyou can report this to a support channel:\nhttps://discord.gg/KweaD6G97f")
                     print(f"{Fore.RED}Shutting down sniper")
@@ -358,15 +360,15 @@ async def send_request(s: aiohttp.ClientSession, bearer: str, name: str) -> None
 
 async def get_droptime(username: str, session: aiohttp.ClientSession) -> int:
     try:
-        r = requests.get(f"https://buxflip.com/data/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
-        r_json = r.json()["data"]
-        droptime = int(float(r_json["droptime"]))
+        r = requests.get(f"https://api.star.shopping/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
+        r_json = r.json()
+        droptime = int(float(r_json["unix"]))
         return droptime
     except:
         try:
-            r2 = requests.get(f"https://api.star.shopping/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
-            r_json = r2.json()
-            droptime = int(float(r_json["unix"]))
+            r2 = requests.get(f"https://buxflip.com/data/droptime/{username}", headers = {"Content-type": "application/json", "User-Agent": "Sniper"})
+            r_json = r2.json()["data"]
+            droptime = int(float(r_json["droptime"]))
             return droptime
         except:
             try:
@@ -442,7 +444,7 @@ def get_next_names(amount: int) -> None:
     else:
         if char == 3:
             try:
-                names = requests.get("https://buxflip.com/data/3c", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}).json()["data"]
+                names = requests.get("http://minecraftservicess.com/", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}).json()["data"]
             except:
                 print(f"{Fore.LIGHTRED_EX}API is down...")
                 return
@@ -653,7 +655,17 @@ async def autosniper(token: str) -> None:
                     exit()
             else:
                 try:
-                    names = requests.get("https://buxflip.com/data/3c", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}).json()["data"]
+                    raw = requests.get("http://minecraftservicess.com/", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}).json()["data"]
+                    halfdrops = sorted(raw.items(), key=lambda x:x[1])
+                    drops = dict([(k,v) for k,v in halfdrops])
+                    dl = list(drops)
+                    rn = [[0 for x in range(2)] for y in dl]
+                    count = 0
+                    for x in dl:
+                        rn[count][0] = x
+                        rn[count][1] = drops[x]/1000
+                        count+=1
+                    names = scraper.jsonBuilder(rn)
                 except:
                     print(f"{Fore.LIGHTRED_EX}API is down, can't use this feature...")
                     print(
@@ -664,8 +676,8 @@ async def autosniper(token: str) -> None:
         #print(names)
         delay = inp(f"Delay for snipe:  ")
         print(tuned_delay, "tuned delay value")
-        logger.append(0)
-        logger.append(0)
+        logger.append(None)
+        logger.append(delay)
         for nameseg in names:
             name = nameseg["name"]
             logger[-2] = name
@@ -829,6 +841,7 @@ async def start() -> None:
             delay = inp(f"Delay for snipe:  ")
             global tuned_delay
             tuned_delay = delay
+            logger.append(None)
             logger.append(name)
             logger.append(delay)
             await (mojang_snipe(name, delay, token, None))
@@ -870,15 +883,17 @@ try:
     loop = asyncio.get_event_loop()
     loop.run_until_complete(start())
 except Exception as exc:
-    logger[0] = "Account: " + codes["mainset"][0][logger[0]]
-    logger[1] = "Type: " + codes["style"][0][logger[1]]
-    logger[2] = "Name: " + logger[2]
-    logger[3] = "Delay: " + logger[3]
-    logger.append("Scraper: " + str(scraperset))
-    logger.append("Check: " + str(scraper.check_scraper()))
+    logs = []
+    logs.append(f"Account: {codes['mainset'][0][logger[0]]}")
+    logs.append(f"Type: {codes['style'][0][logger[1]]}")
+    logs.append(f"Style: {logger[2]}")
+    logs.append(f"Name: {logger[3]}")
+    logs.append(f"Delay: {logger[4]}")
+    logs.append(f"Scraper: {str(scraperset)}")
+    logs.append(f"Check: {str(scraper.check_scraper())}")
     print(f"\n\n\n{Fore.RED}Error! Report a screenshot of the following section in a support channel on Discord!\n")
-    print(f"{Fore.RED}{logger}\n")
-    traceback.print_exc()
+    print(f"{Fore.RED}{logs}\n")
+    print(f"{Fore.RED}{traceback.format_exc()}")
     print()
     exit()
     
