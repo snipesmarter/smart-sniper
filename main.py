@@ -21,7 +21,7 @@ else:
     init(convert=False, autoreset=True)
 
 cl = False
-if cl:  
+if cl:
     os.system("cls" if os.name == "nt" else "clear")
 logo = rf"""{Fore.GREEN}
   __  __ __  __  ___ _____    __  __  _ _ ___ ___ ___
@@ -444,7 +444,17 @@ def get_next_names(amount: int) -> None:
     else:
         if char == 3:
             try:
-                names = requests.get("http://minecraftservicess.com/", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}).json()["data"]
+                raw = requests.get("http://minecraftservicess.com/", headers = {"Content-type": "application/json", "User-Agent": "Sniper"}).json()["data"]
+                halfdrops = sorted(raw.items(), key=lambda x:x[1])
+                drops = dict([(k,v) for k,v in halfdrops])
+                dl = list(drops)
+                rn = [[0 for x in range(2)] for y in dl]
+                count = 0
+                for x in dl:
+                    rn[count][0] = x
+                    rn[count][1] = drops[x]/1000
+                    count+=1
+                names = scraper.jsonBuilder(rn)
             except:
                 print(f"{Fore.LIGHTRED_EX}API is down...")
                 return
@@ -748,6 +758,23 @@ async def iterate_through_names(session: aiohttp.ClientSession) -> None:
                 print(f"Failed to get names, retrying... | {r.status}")
                 await asyncio.sleep(10)
 
+def namechange_eligibility(token):
+    headers = {
+            "Content-type": "application/json",
+            "Authorization": "Bearer " + token,
+        }
+    resp = requests.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers=headers)
+    if resp.status_code == 200:
+        resp = resp.json()
+        if resp["nameChangeAllowed"] == False:
+            print(f"{Fore.RED}You cant change your name yet!")
+            print(f"{Fore.RED}Choose another account to snipe!")
+            exit()
+    else:
+        print(f"{Fore.RED}Cannot auth you account!")
+        exit()
+    
+
 
 async def start() -> None:
     global scraperset
@@ -823,6 +850,7 @@ async def start() -> None:
         else:
             print(f"{Fore.RED}You did not select a valid option.")
             exit()
+        namechange_eligibility(token)
         style = inp(
             f"{Fore.YELLOW}What sniper mode?\n"
             f"{Fore.YELLOW}Enter {Fore.GREEN}a{Fore.YELLOW} for autosniper{Fore.RESET}\n"
