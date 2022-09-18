@@ -1,6 +1,10 @@
 <h1 align="center">
 Smart Sniper
 </h1>
+
+<h1 align="center"><b>Discontinued!</b><br><br>
+Namesniping was terminated by Mojang with the removal of the public namehistory for accounts. <br><br>
+<a href="https://help.minecraft.net/hc/en-us/articles/8969841895693-Username-History-API-Removal-FAQ-">Official Announcement</a></h1>
 <p align="center">
 	<a href="https://github.com/snipesmarter/smart-sniper">
 	<img
